@@ -2,7 +2,9 @@ var port = 80;
 
 var bodyParser = require('body-parser');
 var express = require('express');
-var multer  = require('multer')
+var multer  = require('multer');
+require('dotenv').config();
+var sendSMS = require('./send_sms');
 const MongoClient = require("mongodb").MongoClient;
 
 MONGO_URL = "mongodb://127.0.0.1:27017"
@@ -12,6 +14,10 @@ MongoClient.connect(
   (err, client) => {
     if (err) return console.log(err);
     db = client.db("staff_trak");
+
+    /* Add code to call Jotform API and refresh data 
+    in case things changed while the server was down. */
+
     app.listen(80, function() {
       console.log("listening on 80");
     });
@@ -28,6 +34,9 @@ app.post('/register', multipart.array(), function(req, res) {
   console.log(req.body)
   data = JSON.parse(req.body.rawRequest)
   console.log(data)
+
+  sendSMS('https://hipaa.jotform.com/200887837659171', '5712260277');
+
   db.collection('users').update({phone_number: data.q32_phoneNumber},{
       name: data.q31_name.first + " " + data.q31_name.last,
       phone_number: data.q32_phoneNumber,
