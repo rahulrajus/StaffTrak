@@ -7,6 +7,9 @@ require('dotenv').config();
 var sendSMS = require('./send_sms');
 const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require('mongodb').ObjectID; 
+var moment = require('moment');
+var departments = require('./departments')
+
 // sendSMS('https://hipaa.jotform.com/200887837659171', '5712260277');
 
 MONGO_URL = "mongodb://127.0.0.1:27017"
@@ -25,6 +28,7 @@ MongoClient.connect(
     });
   }
 );
+
 
 var app = express();
 var multipart = multer();
@@ -54,20 +58,28 @@ app.post('/register', multipart.array(), async function(req, res) {
   console.log(data)
   sendSMS('Thank you for registering!', data.q32_phoneNumber);
 
-  await db.collection('users').findOneAndUpdate({phone_number: data.q32_phoneNumber},{$set: {
-      name: data.q31_name.first + " " + data.q31_name.last,
-      phone_number: data.q32_phoneNumber,
-      department: data.q42_department,
-      age: data.q36_age,
-      gender: data.q37_gender,
-      zipcode: data.q38_homeZip,
-      submissions: []
-  }},{
-      upsert: true
-  }).then(user => {
-      id = user.value._id
+  await db.collection('users').findOneAndUpdate(
+    {phone_number: data.q32_phoneNumber},
+    {
+        $set: {
+            name: data.q31_name.first + " " + data.q31_name.last,
+            phone_number: data.q32_phoneNumber,
+            department: data.q42_department,
+            age: data.q36_age,
+            gender: data.q37_gender,
+            home_zipcode: data.q38_homeZip,
+            preexisting_conditions: data.q35_doYou,
+            submissions: []
+        }
+    },
+    {
+        upsert: true
+    }).then(user => {
+      id = user.value._id;
       db.collection('responses').insertOne({
-
+          symptoms: data.q28_whatSymptoms,
+          temperature: data.q30_whatIs,
+          exposed_in_last_24h: data.q33_inThe
       })
 
   });

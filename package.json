@@ -198,6 +198,8 @@
       "resolved": "https://registry.npmjs.org/lodash.once/-/lodash.once-4.1.1.tgz",
       "version": "4.1.1"
     },
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.28",
     "mongodb": "^3.5.5",
     "ms": {
       "integrity": "sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=",
