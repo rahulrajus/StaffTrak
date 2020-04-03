@@ -15,9 +15,6 @@ const client = require('twilio')(accountSid, authToken);
 // });
 
 function sendSMS(messageBody, recipientPhoneNum) {
-    console.log("hellooo");
-
-    console.log('+1' + recipientPhoneNum);
     client.messages
     .create({
         body: messageBody,

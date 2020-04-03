@@ -1,7 +1,7 @@
 var moment = require('moment-timezone');
 // moment().format('MMMM Do YYYY, h:mm:ss a')
 var time_s = (time) => {
-    return moment(time, 'HHmm').tz('America/Los_Angeles').format('HH:mm')
+    return moment(time, 'HHmm').format('HH:mm')
 }
 
 var departments =
