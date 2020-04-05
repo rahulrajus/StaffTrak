@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "nodemon server.js"
+  },
   "requires": true,
   "lockfileVersion": 1,
   "dependencies": {
@@ -96,6 +99,8 @@
       "version": "1.0.11"
     },
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "express-validator": "^6.4.0",
     "follow-redirects": {
       "dependencies": {
         "debug": {

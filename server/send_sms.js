@@ -4,7 +4,6 @@
 require('dotenv').config();
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
-console.log(accountSid, authToken);
 const client = require('twilio')(accountSid, authToken);
 // client.on('tokenAboutToExpire', function() {
 //   // Implement fetchToken() to make a secure request to your backend to retrieve a refreshed access token.
@@ -16,14 +15,14 @@ const client = require('twilio')(accountSid, authToken);
 
 function sendSMS(messageBody, recipientPhoneNum) {
     client.messages
-    .create({
-        body: messageBody,
-        from: '+16625544151',
-        to: '+1' + recipientPhoneNum
-    })
-    .then(message => console.log(message.sid)).catch(err => {
-        console.log(err);
-    });
+        .create({
+            body: messageBody,
+            from: '+16625544151',
+            to: '+1' + recipientPhoneNum
+        })
+        .then(message => console.log(message.sid)).catch(err => {
+            console.log(err);
+        });
 
 }
 module.exports = sendSMS;
