@@ -19,9 +19,12 @@ app.post('/register', multipart.array(), async function (req, res) {
 
   institution = await Institution.findOne({"registrationForm.url": `https://hipaa.jotform.com/${formId}`});
   registrationKeys = institution.registrationForm
-  console.log(formId);
-  console.log(institution);
-  department_id = await Department.findOne({name: data[registrationKeys.departmentName]})._id;
+  // console.log(formId);
+  // console.log(institution);
+  console.log(data[registrationKeys.departmentName]);
+  department = await Department.findOne({departmentName: data[registrationKeys.departmentName]});
+  console.log(department);
+  department_id = department._id
 
   // Text a confirmation message
   sendSMS('Thank you for registering!', data[registrationKeys.phoneNumber]);
@@ -57,6 +60,7 @@ app.post('/register', multipart.array(), async function (req, res) {
   // Update the Department collection with the ID of the new user
   pushMembers = { $push: { members: user_id } }
   await Department.findByIdAndUpdate(department_id, pushMembers);
+  console.log("updated department" + department_id + " " + user_id)
   res.send(req.body);
 
 });
