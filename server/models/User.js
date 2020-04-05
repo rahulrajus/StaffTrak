@@ -29,25 +29,16 @@ var userSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  zipCode: {
+  homeZipCode: {
     type: Number,
     required: true
   },
   preExistingConditions: {
-    type: String,
-    trim: true,
+    type: Boolean,
+    required: true
   },
   responses: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Response' }],
-  },
-  lastNotifTime: {
-    type: Date
-  },
-  nextScheduled: {
-    type: Date
-  },
-  lastResponse: {
-    type: Date
   }
 });
 

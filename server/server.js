@@ -2,23 +2,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
-const sendSMS = require('./send_sms');
-const ObjectID = require('mongodb').ObjectID;
-const moment = require('moment');
-const departments = require('./scripts/departments')
-const mongoose = require('mongoose');
-
-// connect to database
-const mongoURL = process.env.MONGO_SRV;
-const options = { useNewUrlParser: true, useUnifiedTopology: true };
-mongoose.connect(mongoURL, options);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useFindAndModify', false);
-mongoose.Promise = global.Promise;
-const db = mongoose.connection;
-
-// db error handling
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = express();
 const http = require('http').Server(app);

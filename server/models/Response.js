@@ -6,8 +6,18 @@ var responseSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId, ref: 'User',
     required: true
   },
-  // fill in here
-  // responses: {}
+  symptoms: {
+    type: [String],
+    required: true
+  },
+  temperature: {
+    type: Number,
+    required: true
+  },
+  exposedInLast24h: {
+    type: Boolean,
+    required: true
+  }
 });
 
 var Response = mongoose.model('Response', responseSchema)
