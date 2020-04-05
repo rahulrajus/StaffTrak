@@ -16,15 +16,11 @@ var userSchema = new mongoose.Schema({
     type: Number,
     required: 'phone number is required'
   },
-  departmentName: {
-    type: String,
-    required: true,
-  },
   departmentId: {
     type: Schema.Types.ObjectId, ref: 'Department',
     required: true
   },
-  gender: {
+  sex: {
     type: String,
     trim: true,
     required: true,
@@ -33,12 +29,13 @@ var userSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  preExistingConditions: {
+  preexistingRiskCondition: {
     type: Boolean,
     required: true
   },
   responses: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Response' }],
+    default: []
   }
 });
 

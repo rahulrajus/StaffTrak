@@ -8,16 +8,18 @@ var departmentSchema = new mongoose.Schema({
   },
   members: {
     type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    default: []
   },
   notifTimes: {
     type: [String],
     default: ['0600', '1700']
   },
   admins: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'Administrator' }]
+    type: [{ type: Schema.Types.ObjectId, ref: 'Administrator' }],
+    default: []
   },
   institution: {
-    type: { type: Schema.Types.ObjectId, ref: 'Institution' }
+    type: { type: Schema.Types.ObjectId, ref: 'Institution' },
   }
 });
 
