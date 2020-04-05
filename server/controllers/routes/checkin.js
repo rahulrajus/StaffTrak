@@ -1,31 +1,35 @@
 const express = require('express');
 const multer = require('multer');
+const { check, validationResult } = require('express-validator/check');
+
+const User = require('../../models/User');
+const Response = require('../../models/Response');
+const Department = require('../../models/Department');
+const Institution = require('../../models/Institution');
 
 const app = express.Router();
 const multipart = multer();
-const Response = require('../../models/Response')
-const User = require('../../models/User')
 
-app.post('/checkin', multipart.array(), function (req, res) {
+
+app.post('/checkin', multipart.array(), async function (req, res) {
+  formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
-  db.collection('responses').insertOne({
-    name: data.q31_name.first + " " + data.q31_name.last,
-    phone_number: data.q32_phoneNumber,
-    department: data.q44_department,
-    symptoms: data.q28_whatSymptoms,
-    temperature: data.q43_temperatureIn,
-    exposed_in_last_24h: data.q33_inThe
-  }).then(doc => {
-    response_id = doc.insertedId;
-    query = { phone_number: data.q32_phoneNumber }
-    update = { $push: { responses: response_id } }
-    db.collection('users').findOneAndUpdate(query, update).then(user => {
-      user_id = user.value._id;
-      query = { _id: new ObjectID(response_id) }
-      update = { $set: { user_id: user_id } }
-      db.collection('responses').updateOne(query, update);
-    })
-  });
+
+  institution = await Institution.findOne({"responseForm.url": `https://hipaa.jotform.com/${formId}`});
+  responseKeys = institution.responseForm
+
+  department_id = await Department.findOne({name: data[responseKeys.departmentName]})._id;
+
+  newResponse = {
+    user: user_id,
+    symptoms: data[responseKeys.symptoms],
+    temperature: data[responseKeys.temperature],
+    exposedInLast24h: data[responseKeys.exposedInLast24h]
+  }
+  response = await Response.create(newResponse);
+  pushResponses = { $push: { responses: response._id } }
+  await User.findByIdAndUpdate(user._id, pushResponses);
+
 });
 
 module.exports = app;
