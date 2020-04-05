@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 var institutionSchema = new mongoose.Schema({
   name: String,
+  timeZone: String,
   registrationForm: {
     url: String,
     name: {

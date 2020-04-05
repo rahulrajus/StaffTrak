@@ -20,7 +20,8 @@ var departmentSchema = new mongoose.Schema({
   },
   institution: {
     type: { type: Schema.Types.ObjectId, ref: 'Institution' },
-  }
+  },
+  timeOfLastNotif: String
 });
 
 var Department = mongoose.model('Department', departmentSchema)
