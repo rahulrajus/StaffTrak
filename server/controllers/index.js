@@ -7,7 +7,7 @@ const path = require('path');
 require('dotenv').config()
 
 // local dependencies
-// const db = require('../db');
+const db = require('../db');
 
 // initialize express app
 const app = express();
