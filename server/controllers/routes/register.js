@@ -2,52 +2,61 @@ const express = require('express');
 const multer = require('multer');
 const { check, validationResult } = require('express-validator/check');
 
+const sendSMS = require('../../scripts/send_sms');
+
 const User = require('../../models/User');
+const Response = require('../../models/Response');
+const Department = require('../../models/Department');
+const Institution = require('../../models/Institution');
 
 const app = express.Router();
 const multipart = multer();
 
-// MODIFY TO MONGOOSE
+/* Register a new user */
 app.post('/register', multipart.array(), async function (req, res) {
+  formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
-  sendSMS('Thank you for registering!', data.q32_phoneNumber);
 
-  await db.collection('users').findOneAndUpdate({
-    phone_number: data.q32_phoneNumber
-  }, {
-    $set: {
-      name: data.q31_name.first + " " + data.q31_name.last,
-      phone_number: data.q32_phoneNumber,
-      department: data.q42_department,
-      age: data.q36_age,
-      gender: data.q37_gender,
-      home_zipcode: data.q38_homeZip,
-      preexisting_conditions: data.q35_doYou,
-      responses: []
-    }
-  }, { upsert: true }).then(async user => {
-    user_id = user.value ? user.value._id : user.lastErrorObject.upserted;
-    await db.collection('responses').insertOne(
-      {
-        symptoms: data.q28_whatSymptoms,
-        temperature: data.q30_whatIs,
-        exposed_in_last_24h: data.q33_inThe,
-        user_id: user_id
-      }
-    ).then(result => {
-      response_id = result.insertedId
-      userQuery = { _id: new ObjectID(user_id) }
-      pushResponses = { $push: { responses: response_id } }
-      db.collection('users').updateOne(userQuery, pushResponses);
-    });
-    departmentQuery = { name: data.q42_department }
-    pushMembersUpdate = { $push: { members: user_id } }
-    await db.collection('departments').updateOne(
-      departmentQuery, pushMembersUpdate
-    );
-  });
+  institution = Institution.findOne({formLink: `https://hipaa.jotform.com/${formId}`});
+  registrationKeys = institution.registrationForm
+  department_id = Department.findOne({name: data[registrationKeys.departmentName]})._id;
+
+  // Text a confirmation message
+  sendSMS('Thank you for registering!', data[registrationKeys.phoneNumber]);
+
+  // Update the User collection with the new user
+  query = {phone_number: data[registrationKeys.phoneNumber]}
+  userUpdate = {$set: {
+      firstName: data[registrationKeys.name].first,
+      lastName: data[registrationKeys.name].last,
+      phoneNumber: data[registrationKeys.phoneNumber],
+      department: department_id,
+      age: data[registrationKeys.age],
+      sex: data[registrationKeys.sex],
+      homeZipCode: data[registrationKeys.homeZipCode],
+      preexistingRiskCondition: data[registrationKeys.preexistingRiskCondition]
+  }}
+  user = await User.findOneAndUpdate(query, userUpdate, {upsert: true, "new": true})
+  user_id = user._id
+
+  // Update the Response collection with the new response
+  newResponse = {
+    user: user_id,
+    symptoms: data[registrationKeys.symptoms],
+    temperature: data[registrationKeys.temperature],
+    exposedInLast24h: data[registrationKeys.exposedInLast24h]
+  }
+  response = await Response.insertOne(newResponse);
+
+  // Update the User collection with the ID of the new response
+  pushResponses = { $push: { responses: response._id } }
+  await User.findByIdAndUpdate(user._id, pushResponses);
+
+  // Update the Department collection with the ID of the new user
+  pushMembers = { $push: { members: user_id } }
+  await Department.findByIdAndUpdate(department_id, pushMembers);
   res.send(req.body);
-});
 
+});
 
 module.exports = app;

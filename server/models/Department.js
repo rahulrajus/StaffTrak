@@ -17,7 +17,7 @@ var departmentSchema = new mongoose.Schema({
     type: [{ type: Schema.Types.ObjectId, ref: 'Administrator' }]
   },
   institution: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'Institution' }]
+    type: { type: Schema.Types.ObjectId, ref: 'Institution' }
   }
 });
 

@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var institutionSchema = new mongoose.Schema({
-  link: String,
+  formLink: String,
   registrationForm: {
     name: {
       type: String,
-      required: 'first name is required'
+      required: 'name is required'
     },
     phoneNumber: String,
     departmentName: String,

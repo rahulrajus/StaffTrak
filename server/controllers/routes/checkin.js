@@ -3,10 +3,11 @@ const multer = require('multer');
 
 const app = express.Router();
 const multipart = multer();
+const Response = require('../../models/Response')
+const User = require('../../models/User')
 
 app.post('/checkin', multipart.array(), function (req, res) {
   data = JSON.parse(req.body.rawRequest)
-
   db.collection('responses').insertOne({
     name: data.q31_name.first + " " + data.q31_name.last,
     phone_number: data.q32_phoneNumber,
