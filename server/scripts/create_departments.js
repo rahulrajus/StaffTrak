@@ -3,7 +3,7 @@ const Department = require('../../models/Department');
 
 function createDepartmentinInstitution(departmentName, institution) {
   newDepartment = {name: departmentName, institution: institution._id}
-  await department = Department.create(newDepartment);
+  department = await Department.create(newDepartment);
 
   institutionUpdate = {$push: {departments: department._id}}
   await Institution.findByIdAndUpdate(institution._id, institutionUpdate);

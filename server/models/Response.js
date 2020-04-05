@@ -15,7 +15,7 @@ var responseSchema = new mongoose.Schema({
     required: true
   },
   exposedInLast24h: {
-    type: Boolean,
+    type: String,
     required: true
   }
 });

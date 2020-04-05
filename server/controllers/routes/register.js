@@ -17,15 +17,17 @@ app.post('/register', multipart.array(), async function (req, res) {
   formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
 
-  institution = Institution.findOne({formLink: `https://hipaa.jotform.com/${formId}`});
+  institution = await Institution.findOne({"registrationForm.url": `https://hipaa.jotform.com/${formId}`});
   registrationKeys = institution.registrationForm
-  department_id = Department.findOne({name: data[registrationKeys.departmentName]})._id;
+  console.log(formId);
+  console.log(institution);
+  department_id = await Department.findOne({name: data[registrationKeys.departmentName]})._id;
 
   // Text a confirmation message
   sendSMS('Thank you for registering!', data[registrationKeys.phoneNumber]);
 
   // Update the User collection with the new user
-  query = {phone_number: data[registrationKeys.phoneNumber]}
+  query = {phoneNumber: data[registrationKeys.phoneNumber]}
   userUpdate = {$set: {
       firstName: data[registrationKeys.name].first,
       lastName: data[registrationKeys.name].last,
@@ -46,7 +48,7 @@ app.post('/register', multipart.array(), async function (req, res) {
     temperature: data[registrationKeys.temperature],
     exposedInLast24h: data[registrationKeys.exposedInLast24h]
   }
-  response = await Response.insertOne(newResponse);
+  response = await Response.create(newResponse);
 
   // Update the User collection with the ID of the new response
   pushResponses = { $push: { responses: response._id } }
