@@ -10,10 +10,14 @@ var departmentSchema = new mongoose.Schema({
     type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
   notifTimes: {
-    type: [Date],
+    type: [String],
+    default: ['0600', '1700']
   },
   admins: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Administrator' }]
+  },
+  institution: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Institution' }]
   }
 });
 
