@@ -45,10 +45,10 @@ app.post('/test_register', async function(req, res) {
     });
     res.send("ok!")
 })
+
 app.post('/register', multipart.array(), async function(req, res) {
     data = JSON.parse(req.body.rawRequest)
     sendSMS('Thank you for registering!', data.q32_phoneNumber);
-
     await db.collection('users').findOneAndUpdate({
         phone_number: data.q32_phoneNumber
     }, {
