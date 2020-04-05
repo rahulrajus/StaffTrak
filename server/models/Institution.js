@@ -8,8 +8,12 @@ var institutionSchema = new mongoose.Schema({
       type: String,
       required: 'first name is required'
     },
-    phoneNumber: String,
+    phoneNumber: String, 
     departmentName: String,
+    age: String,
+    sex: String,
+    homeZipCode: String,
+    preexistingRiskCondition: String,
     symptoms: String,
     temperature: String,
     exposedInLast24h: String,
