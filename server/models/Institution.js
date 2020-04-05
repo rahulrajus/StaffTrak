@@ -8,20 +8,16 @@ var institutionSchema = new mongoose.Schema({
       type: String,
       required: 'first name is required'
     },
-    phoneNumber: String, 
+    phoneNumber: String,
     departmentName: String,
-    age: String,
-    sex: String,
-    homeZipCode: String,
-    preexistingRiskCondition: String,
     symptoms: String,
     temperature: String,
-    exposedInLast24h: String,
+    exposedInLast24h: String
   },
   responseForm: {
     symptoms: String,
     temperature: String,
-    exposedInLast24h: String,
+    exposedInLast24h: String
   },
   departments: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Department' }]
@@ -30,7 +26,6 @@ var institutionSchema = new mongoose.Schema({
 
 var Institution = mongoose.model('Institution', institutionSchema)
 module.exports = Institution;
-
 
 
 
