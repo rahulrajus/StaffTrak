@@ -1,6 +1,7 @@
 var schedule = require('node-schedule');
 var sendSMS = require('./send_sms');
 var moment = require('moment-timezone');
+var mongoose = require('mongoose');
 
 const Institution = require('../models/Institution');
 const Department = require('../models/Department');
@@ -12,21 +13,21 @@ var generateLink = (url, phoneNumber, name, department) => {
 }
 
 function sendDepartmentNotification(department) {
-    // department = await Department.findById(department_id)
+
     notifTimes = department.notifTimes
 
     institution_id = department.institution
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
-        console.log("hello" + department + "hello")
-        console.log(department.notifTimes)
+
         for(var i = 0; i<department.notifTimes.length;i++) {
             var time = department.notifTimes[i]
-            console.log(time)
-            console.log(notifTimes)
+
             scheduled = moment.tz(time, 'HHmm', timeZone);
             scheduledFormatted = scheduled.format();
 
+            console.log('time of last notif: ' + department.timeOfLastNotif)
+            console.log('scheduled:          ' + scheduledFormatted)
             // Check if we have already sent this notification
             if (department.timeOfLastNotif == scheduledFormatted) continue;
 
@@ -34,16 +35,11 @@ function sendDepartmentNotification(department) {
             // scheduled notification time
             current = moment();
             difference = scheduled.diff(current, "minute");
-            console.log(scheduled)
-            console.log(timeZone)
-            console.log(current)
-            console.log(difference)
-            if(difference < -5 || difference >= 1) continue;
+
+            if(difference != 0) continue;
 
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
-            console.log(scheduledFormatted);
-            console.log(department._id)
             Department.findByIdAndUpdate(department._id, {
                 $set: {
                     timeOfLastNotif: scheduledFormatted
@@ -65,14 +61,11 @@ function sendDepartmentNotification(department) {
             })
         }
     })
-
 }
 
 async function scheduleNotifications() {
 	schedule.scheduleJob("*/12 * * * * *", async () => {
-        console.log("hello!")
         allDepartments = await Department.find({});
-        // console.log(allDepartments);
         allDepartments.forEach(department => {
             sendDepartmentNotification(department);
         });
