@@ -26,8 +26,6 @@ function sendDepartmentNotification(department) {
             scheduled = moment.tz(time, 'HHmm', timeZone);
             scheduledFormatted = scheduled.format();
 
-            console.log('time of last notif: ' + department.timeOfLastNotif)
-            console.log('scheduled:          ' + scheduledFormatted)
             // Check if we have already sent this notification
             if (department.timeOfLastNotif == scheduledFormatted) continue;
 
