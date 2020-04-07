@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server/server.js"
   },
   "requires": true,
   "lockfileVersion": 1,
