@@ -9,6 +9,8 @@ const Response = require('../../models/Response');
 const Department = require('../../models/Department');
 const Institution = require('../../models/Institution');
 
+const mongoose = require('mongoose');
+
 const app = express.Router();
 const multipart = multer();
 
@@ -21,9 +23,9 @@ app.post('/register', multipart.array(), async function (req, res) {
   registrationKeys = institution.registrationForm
   // console.log(formId);
   // console.log(institution);
-  console.log(data[registrationKeys.departmentName]);
+  console.log('input ' + data[registrationKeys.departmentName]);
   department = await Department.findOne({departmentName: data[registrationKeys.departmentName]});
-  console.log(department);
+  console.log('department ' + department + " " + department.departmentName);
   department_id = department._id
 
   // Text a confirmation message
@@ -35,7 +37,7 @@ app.post('/register', multipart.array(), async function (req, res) {
       firstName: data[registrationKeys.name].first,
       lastName: data[registrationKeys.name].last,
       phoneNumber: data[registrationKeys.phoneNumber],
-      department: department_id,
+      department: mongoose.Types.ObjectId(department._id),
       age: data[registrationKeys.age],
       sex: data[registrationKeys.sex],
       homeZipCode: data[registrationKeys.homeZipCode],

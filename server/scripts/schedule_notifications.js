@@ -42,7 +42,7 @@ function sendDepartmentNotification(department) {
                 $set: {
                     timeOfLastNotif: scheduledFormatted
                 }
-            });
+            }).then(console.log(department.timeOfLastNotif));
             //check if notification has already been sent
             //mark notification as sent
             //sends notification
