@@ -39,7 +39,6 @@ function sendDepartmentNotification(department) {
             console.log(current)
             console.log(difference)
             if(difference < -5 || difference >= 1) continue;
-
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
             console.log(scheduledFormatted);
@@ -49,6 +48,7 @@ function sendDepartmentNotification(department) {
                     timeOfLastNotif: scheduledFormatted
                 }
             });
+
             //check if notification has already been sent
             //mark notification as sent
             //sends notification
