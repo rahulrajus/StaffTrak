@@ -7,7 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import DailyInsight from './components/DailyInsight';
-import DepartmentTable from './components/departmentTable/DepartmentTable';
+import DepartmentTable from './components/DepartmentTable';
 import './css/Portal.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +41,7 @@ function Portal() {
           </AppBar>
         </Grid>
         <Box mx={12} my={8}>
-          <Grid container direction="col" spacing={4}>
+          <Grid container spacing={4}>
             <Grid item xs={12}>
               <DailyInsight />
             </Grid>
