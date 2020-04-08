@@ -31,8 +31,10 @@ function sendDepartmentNotification(department) {
         console.log(department)
         for(var i = 0; i<department.notifTimes.length;i++) {
             var time = department.notifTimes[i]
-            console.log(time)
-            scheduled = moment.tz(time, 'HHmm', timeZone);
+            // console.log(time)
+            // scheduled = moment.tz(time, 'HHmm', timeZone);
+            todayDate = moment.tz(timeZone).format('YYYY-MM-DD')
+            scheduled = moment.tz(todayDate + ' ' + time, 'YYYY-MM-DD HHmm', timeZone)
             scheduledFormatted = scheduled.format();
 
             // Check if we have already sent this notification
