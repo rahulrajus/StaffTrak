@@ -26,7 +26,7 @@ function sendDepartmentNotification(department) {
 
     console.log("im here2")
 
-    Institution.findById(institution_id).then(institution => {
+    Institution.findById(institution_id).then(async institution => {
         timeZone = institution.timeZone
         console.log(department)
         for(var i = 0; i<department.notifTimes.length;i++) {
@@ -50,13 +50,11 @@ function sendDepartmentNotification(department) {
             // console.log('time to send!')
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
-            Department.findByIdAndUpdate(department._id, {
+            await Department.findByIdAndUpdate(department._id, {
                 $set: {
                     timeOfLastNotif: scheduledFormatted
                 }
-            }).then(x => {
-                console.log("hello");
-            });
+            })
             // console.log('yoo we updated lastNotif yuh')
 
 

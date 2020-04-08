@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
+import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -23,14 +25,35 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+<<<<<<< HEAD
 function Login(){
     const classes = useStyles();
+=======
+function Login(props){
+    const classes = useStyles();
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const { setAuthTokens } = useAuth()
+
+
+    function postLogin(){
+        console.log("click")
+        setAuthTokens({name: "t@g.com", password: "123"})
+        setLoggedIn(true)
+    }
+
+    if(isLoggedIn){
+        return <Redirect to="/portal" />
+    }
+>>>>>>> 862267544dff49032ce662b97c59a233d1189951
 
 
 
     return (
         <Paper >
-       
+
             <Grid item xs={12}>
                 <AppBar position="static" color="primary">
                     <Toolbar>
@@ -46,7 +69,11 @@ function Login(){
                         <Face />
                     </Grid>
                     <Grid item md={true} sm={true} xs={true}>
+<<<<<<< HEAD
                         <TextField id="username" label="Username" type="email" fullWidth autoFocus required />
+=======
+                        <TextField id="username" label="Username" type="email" onChange={e => {setUserName(e.target.value)}} fullWidth autoFocus required />
+>>>>>>> 862267544dff49032ce662b97c59a233d1189951
                     </Grid>
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end">
@@ -54,17 +81,25 @@ function Login(){
                         <Fingerprint />
                     </Grid>
                     <Grid item md={true} sm={true} xs={true}>
+<<<<<<< HEAD
                         <TextField id="passport" label="Password" type="password"  fullWidth required />
+=======
+                        <TextField id="passport" label="Password" type="password" onChange={e => {setPassword(e.target.value)}}   fullWidth required />
+>>>>>>> 862267544dff49032ce662b97c59a233d1189951
                     </Grid>
                 </Grid>
                 <Grid container alignItems="center" justify="space-between">
-             
+
                     <Grid item>
                         <Button disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text" color="primary">Forgot password ?</Button>
                     </Grid>
                 </Grid>
                 <Grid container justify="center" style={{ marginTop: '10px' }}>
+<<<<<<< HEAD
                     <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Login</Button>
+=======
+                    <Button variant="outlined" color="primary" onClick={postLogin} style={{ textTransform: "none" }}>Login</Button>
+>>>>>>> 862267544dff49032ce662b97c59a233d1189951
                 </Grid>
             </div>
         </Paper>
