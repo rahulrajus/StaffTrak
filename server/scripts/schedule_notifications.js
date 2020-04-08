@@ -28,10 +28,10 @@ function sendDepartmentNotification(department) {
 
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
-        console.log(departmenet)
+        console.log(department)
         for(var i = 0; i<department.notifTimes.length;i++) {
             var time = department.notifTimes[i]
-
+            console.log(time)
             scheduled = moment.tz(time, 'HHmm', timeZone);
             scheduledFormatted = scheduled.format();
 
