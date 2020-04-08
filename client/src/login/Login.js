@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
+import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -23,8 +25,24 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Login(){
+function Login(props){
     const classes = useStyles();
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const { setAuthTokens } = useAuth()
+
+
+    function postLogin(){
+        console.log("click")
+        setAuthTokens({name: "t@g.com", password: "123"})
+        setLoggedIn(true)
+    }
+
+    if(isLoggedIn){
+        return <Redirect to="/portal" />
+    }
 
 
 
@@ -46,7 +64,7 @@ function Login(){
                         <Face />
                     </Grid>
                     <Grid item md={true} sm={true} xs={true}>
-                        <TextField id="username" label="Username" type="email" fullWidth autoFocus required />
+                        <TextField id="username" label="Username" type="email" onChange={e => {setUserName(e.target.value)}} fullWidth autoFocus required />
                     </Grid>
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end">
@@ -54,7 +72,7 @@ function Login(){
                         <Fingerprint />
                     </Grid>
                     <Grid item md={true} sm={true} xs={true}>
-                        <TextField id="passport" label="Password" type="password"  fullWidth required />
+                        <TextField id="passport" label="Password" type="password" onChange={e => {setPassword(e.target.value)}}   fullWidth required />
                     </Grid>
                 </Grid>
                 <Grid container alignItems="center" justify="space-between">
@@ -64,7 +82,7 @@ function Login(){
                     </Grid>
                 </Grid>
                 <Grid container justify="center" style={{ marginTop: '10px' }}>
-                    <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Login</Button>
+                    <Button variant="outlined" color="primary" onClick={postLogin} style={{ textTransform: "none" }}>Login</Button>
                 </Grid>
             </div>
         </Paper>
