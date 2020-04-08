@@ -244,12 +244,11 @@ export default function DepartmentTable() {
             className={classes.table}
             aria-labelledby="tableTitle"
             size={'medium'}
-            stickyHeader
-            aria-label="enhanced sticky table"
+            aria-label="enhanced table"
           >
             <colgroup>
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '20%' }} />
+              <col style={{ width: '15%' }} />
+              <col style={{ width: '25%' }} />
               <col style={{ width: '15%' }} />
               <col style={{ width: '45%' }} />
             </colgroup>

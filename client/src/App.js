@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import Portal from './portal/Portal';
 import Login from './login/Login';
-import './App.css';
+import ResetPassword from './resetPassword/ResetPassword';
 import PrivateRoute from './PrivateRoute';
 import { AuthContext } from './context/auth';
-
+import './App.css';
 
 function App(props) {
   const [authTokens, setAuthTokens] = useState();
@@ -31,9 +31,9 @@ function App(props) {
       <Router>
         <Route exact path='/' component={Login} />
         <PrivateRoute path='/portal' component={Portal} />
+        <Route path='/resetpassword' component={ResetPassword} />
       </Router>
     </AuthContext.Provider>
-
   );
 }
 
