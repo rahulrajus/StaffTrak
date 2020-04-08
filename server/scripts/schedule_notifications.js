@@ -28,7 +28,7 @@ function sendDepartmentNotification(department) {
 
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
-
+        console.log(departmenet)
         for(var i = 0; i<department.notifTimes.length;i++) {
             var time = department.notifTimes[i]
 
@@ -42,7 +42,7 @@ function sendDepartmentNotification(department) {
             // scheduled notification time
             current = moment();
             difference = scheduled.diff(current, "minute");
-
+            console.log(difference);
             if(difference != 0) continue;
             console.log('time to send!')
             // Mark this notification as sent
