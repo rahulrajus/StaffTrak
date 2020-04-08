@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -41,7 +42,7 @@ function Login(props) {
   }
 
   return (
-    <Paper >
+    <div>
       <Grid item xs={12}>
         <AppBar position="static" color="primary">
           <Toolbar>
@@ -51,7 +52,15 @@ function Login(props) {
           </Toolbar>
         </AppBar>
       </Grid>
-      <div className={classes.margin}>
+
+      <Box mx={55} my={12}>
+        <Grid container spacing={8} justify="center">
+          <Grid item>
+            <Typography variant="h5" className={classes.title}>
+              Welcome to StaffTrak!
+            </Typography>
+          </Grid>
+        </Grid>
         <Grid container spacing={8} alignItems="flex-end">
           <Grid item>
             <Face />
@@ -68,16 +77,16 @@ function Login(props) {
             <TextField id="passport" label="Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
           </Grid>
         </Grid>
-        <Grid container alignItems="center" justify="space-between">
+        <Grid container alignItems="center" justify="flex-end">
           <Grid item>
-            <Button disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text" color="primary">Forgot password ?</Button>
+            <Button disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text" color="primary">Forgot password?</Button>
           </Grid>
         </Grid>
-        <Grid container justify="center" style={{ marginTop: '10px' }}>
-          <Button variant="outlined" color="primary" onClick={postLogin} style={{ textTransform: "none" }}>Login</Button>
+        <Grid container justify="center" style={{ marginTop: '10px' }} flex-grow={1}>
+          <Button variant="contained" color="primary" onClick={postLogin} style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Login</Button>
         </Grid>
-      </div>
-    </Paper>
+      </Box>
+    </div>
   );
 }
 

@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import './css/Portal.css'
-import {useAuth} from '../context/auth'
+import { useAuth } from '../context/auth'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +27,7 @@ function Portal(props) {
   //get request made here to the database
   const [tableData, setTableData] = useState([]);
   const classes = useStyles();
-  const {setAuthTokens} = useAuth();
+  const { setAuthTokens } = useAuth();
 
   function logOut() {
     console.log("log out");
@@ -35,7 +35,7 @@ function Portal(props) {
   }
 
   return (
-    <div >
+    <div>
       <Grid>
         <Grid item xs={12}>
           <AppBar position="static" color="primary">
@@ -43,7 +43,7 @@ function Portal(props) {
               <Typography variant="h6" className={classes.title}>
                 Department Name
               </Typography>
-              <Button color="inherit">Login</Button>
+              <Button color="inherit" onClick={logOut}>Logout</Button>
             </Toolbar>
           </AppBar>
         </Grid>
@@ -57,9 +57,6 @@ function Portal(props) {
             </Grid>
           </Grid>
         </Box>
-        <Button onClick={logOut}>
-          Logout
-        </Button>
       </Grid>
     </div>
   );

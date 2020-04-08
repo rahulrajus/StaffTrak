@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import Portal from './portal/Portal';
 import Login from './login/Login';
-import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 import PrivateRoute from './PrivateRoute';
 import { AuthContext } from './context/auth';
-
-
 
 
 function App(props) {
@@ -35,9 +31,7 @@ function App(props) {
       <Router>
         <Route exact path='/' component={Login} />
         <PrivateRoute path='/portal' component={Portal} />
-
       </Router>
-
     </AuthContext.Provider>
 
   );
