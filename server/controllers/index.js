@@ -8,6 +8,7 @@ require('dotenv').config()
 
 // local dependencies
 const db = require('../db');
+const passport = require('../passport');
 
 // initialize express app
 const app = express();
@@ -31,6 +32,16 @@ app.use(express.static('public'));
 // routes
 app.use(require('./routes/register'));
 app.use(require('./routes/checkin'));
+
+// check if logged in
+app.get('/whoami', function (req, res) {
+  if (req.isAuthenticated()) {
+    res.send(req.user);
+  }
+  else {
+    res.send({});
+  }
+});
 
 // logout
 app.get('/logout', (req, res) => {
