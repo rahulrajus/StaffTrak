@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import Portal from './portal/Portal';
-import Home from './static/Home';
+import Login from './login/Login';
 import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
 
-const PrivateRoute = ({
-  component: Component, authed, loading, ...rest
-}) => (
+const Auth = ({ component: Component, ...rest }) => {
+  const counter = useSelector(state => state);
+  return (
     <Route
       {...rest}
-      render={(props) => {
-        if (authed && !loading) {
-          return <Component {...props} {...rest} />;
-        }
-        return <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
-      }
+      render={props =>
+        counter ? <Component {...props} /> : <Redirect to="/login" />
       }
     />
   );
+}
 
 function App() {
+  const [authed, setAuthed] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -32,9 +30,8 @@ function App() {
 
   const getUser = () => {
     setLoading(false);
-    setUserInfo({ test: 'test' });
-    // setLoading(true);
-    // axios.get('/api/whoami')
+    setAuthed(true);
+    // axios.get('localhost:80/whoami')
     //   .then(
     //     (response) => {
     //       const userObj = response.data;
@@ -52,16 +49,17 @@ function App() {
   return (
     <div>
       <Switch>
-        <Route exact path='/' component={Home} />
-        <Redirect from='/logout' to='/' />
-        <PrivateRoute
+        <Redirect from='/logout' to='/login' />
+        <Route exact path='/login' component={Login} />
+        {authed ? <Route exact path='/portal' component={Portal} userInfo={userInfo} /> : <Route exact path='/login' component={Login} />}
+        {/* <PrivateRoute
           exact
           path='/portal'
-          authed={userInfo !== null}
+          authed={authed}
           loading={loading}
           userInfo={userInfo}
           component={Portal}
-        />
+        /> */}
       </Switch>
     </div>
   );

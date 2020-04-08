@@ -17,6 +17,15 @@ const routes = require('./controllers');
 scheduleNotifications();
 app.use('/', routes);
 
+app.get('/whoami', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.send({});
+    }
+    else {
+        res.send({});
+    }
+});
+
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
