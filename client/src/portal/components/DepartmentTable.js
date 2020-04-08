@@ -1,4 +1,3 @@
-import 'date-fns';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -162,7 +161,7 @@ const useChipStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     '& > *': {
-      margiLeft: theme.spacing(0.5),
+      marginLeft: theme.spacing(0.5),
       marginRight: theme.spacing(0.5)
     },
   },
@@ -203,6 +202,15 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  redHighlight: {
+    backgroundColor: 'rgba(245, 0, 87, 0.08)',
+  },
+  redHighlightHover: {
+    backgroundColor: 'rgba(245, 0, 87, 0.)'
+  },
+  highlightHover: {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  }
 }));
 
 export default function DepartmentTable() {
