@@ -18,6 +18,9 @@ function sendDepartmentNotification(department) {
 
     institution_id = department.institution
     console.log(institution_id);
+    if(institution_id == {}) {
+        return;
+    }
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
 
