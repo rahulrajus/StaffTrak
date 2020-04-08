@@ -33,8 +33,14 @@ function Login(props) {
   const { setAuthTokens } = useAuth();
 
   function postLogin() {
-    setAuthTokens({ name: "t@g.com", password: "123" });
-    setLoggedIn(true);
+    console.log("click")
+    if(userName == "t@g.com" && password == "admin"){
+        setAuthTokens({name: "t@g.com", password: "123"})
+        setLoggedIn(true)
+    }else{
+        setIsError(true)
+    }
+ 
   }
 
   if (isLoggedIn) {
@@ -66,15 +72,14 @@ function Login(props) {
             <Face />
           </Grid>
           <Grid item md={true} sm={true} xs={true}>
-            <TextField id="username" label="Username" type="email" onChange={e => { setUserName(e.target.value) }} fullWidth autoFocus required />
-          </Grid>
+          <TextField error = {isError ? true : false} id="username" label="Username" type="email" onChange={e => {setUserName(e.target.value)}} fullWidth autoFocus required />          </Grid>
         </Grid>
         <Grid container spacing={8} alignItems="flex-end">
           <Grid item>
             <Fingerprint />
           </Grid>
           <Grid item md={true} sm={true} xs={true}>
-            <TextField id="passport" label="Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+          <TextField error = {isError ? true : false} id="passport" label="Password" type="password" onChange={e => {setPassword(e.target.value)}}   fullWidth required />
           </Grid>
         </Grid>
         <Grid container alignItems="center" justify="flex-end">
