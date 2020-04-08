@@ -17,6 +17,7 @@ function sendDepartmentNotification(department) {
     notifTimes = department.notifTimes
 
     institution_id = department.institution
+    console.log(institution_id);
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
 
