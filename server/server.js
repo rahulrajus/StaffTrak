@@ -21,7 +21,6 @@ app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
-
 http.listen(process.env.PORT, () => {
     console.log(`Listening on port 80 and looking in folder ${publicPath}`);
 });

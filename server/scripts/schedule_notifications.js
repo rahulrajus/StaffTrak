@@ -43,6 +43,7 @@ function sendDepartmentNotification(department) {
                     timeOfLastNotif: scheduledFormatted
                 }
             });
+
             //check if notification has already been sent
             //mark notification as sent
             //sends notification

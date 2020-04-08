@@ -11,8 +11,7 @@ var responseSchema = new mongoose.Schema({
     required: true
   },
   temperature: {
-    type: Number,
-    required: true
+    type: Number
   },
   exposedInLast24h: {
     type: String,
