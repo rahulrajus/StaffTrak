@@ -44,6 +44,64 @@ function App(props) {
     //   );
   }
 
+<<<<<<< HEAD
+const Auth = ({ component: Component, ...rest }) => {
+  const counter = useSelector(state => state);
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        counter ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
+}
+
+function App() {
+  const [authed, setAuthed] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = 'StaffTrak';
+    getUser();
+  }, [])
+
+  const getUser = () => {
+    setLoading(false);
+    setAuthed(true);
+    // axios.get('localhost:80/whoami')
+    //   .then(
+    //     (response) => {
+    //       const userObj = response.data;
+    //       if (userObj._id !== undefined) {
+    //         setUserInfo(userInfo);
+    //         setLoading(false);
+    //       } else {
+    //         setUserInfo(null);
+    //         setLoading(false);
+    //       }
+    //     },
+    //   );
+  }
+
+  return (
+    <div>
+      <Switch>
+        <Redirect from='/logout' to='/login' />
+        <Route exact path='/login' component={Login} />
+        {authed ? <Route exact path='/portal' component={Portal} userInfo={userInfo} /> : <Route exact path='/login' component={Login} />}
+        {/* <PrivateRoute
+          exact
+          path='/portal'
+          authed={authed}
+          loading={loading}
+          userInfo={userInfo}
+          component={Portal}
+        /> */}
+      </Switch>
+    </div>
+=======
   return (
     // <div>
     //   <Switch>
@@ -68,8 +126,9 @@ function App(props) {
       </Router>
 
     </AuthContext.Provider>
- 
+
+>>>>>>> 862267544dff49032ce662b97c59a233d1189951
   );
 }
 
-export default App;
+export default withRouter(App);

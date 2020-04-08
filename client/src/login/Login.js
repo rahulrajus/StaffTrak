@@ -31,7 +31,6 @@ function Login(props) {
   const [password, setPassword] = useState("");
   const { setAuthTokens } = useAuth();
 
-
   function postLogin() {
     setAuthTokens({ name: "t@g.com", password: "123" });
     setLoggedIn(true);
