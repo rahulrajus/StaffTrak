@@ -43,19 +43,21 @@ function sendDepartmentNotification(department) {
             // Checks to see if the time is within 1min of the
             // scheduled notification time
             current = moment();
-            console.log(scheduled,current)
+            // console.log(scheduled,current)
             difference = scheduled.diff(current, "minute");
-            console.log(difference);
+            // console.log(difference);
             if(difference != 0) continue;
-            console.log('time to send!')
+            // console.log('time to send!')
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
             Department.findByIdAndUpdate(department._id, {
                 $set: {
                     timeOfLastNotif: scheduledFormatted
                 }
+            }).then(x => {
+                console.log("hello");
             });
-            console.log('yoo we updated lastNotif yuh')
+            // console.log('yoo we updated lastNotif yuh')
 
 
             //check if notification has already been sent
