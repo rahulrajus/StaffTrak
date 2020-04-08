@@ -44,7 +44,7 @@ function sendDepartmentNotification(department) {
             difference = scheduled.diff(current, "minute");
 
             if(difference != 0) continue;
-
+            console.log('time to send!')
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
             Department.findByIdAndUpdate(department._id, {
@@ -52,6 +52,8 @@ function sendDepartmentNotification(department) {
                     timeOfLastNotif: scheduledFormatted
                 }
             });
+            console.log('yoo we updated lastNotif yuh')
+
 
             //check if notification has already been sent
             //mark notification as sent
@@ -64,6 +66,9 @@ function sendDepartmentNotification(department) {
               user = await User.findById(user_id);
               name = {first: user.firstName, last: user.lastName};
               phoneNumber = user.phoneNumber;
+              console.log(phoneNumber);
+              console.log("sending")
+
               formLink = generateLink(url, phoneNumber, name, departmentName);
               sendSMS(formLink, phoneNumber);
             })
