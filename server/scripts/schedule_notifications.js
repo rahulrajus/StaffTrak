@@ -21,6 +21,11 @@ function sendDepartmentNotification(department) {
     if(institution_id == {}) {
         return;
     }
+    console.log("im here")
+    console.log(institution_id)
+
+    console.log("im here2")
+
     Institution.findById(institution_id).then(institution => {
         timeZone = institution.timeZone
 
