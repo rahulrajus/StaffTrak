@@ -41,6 +41,7 @@ function sendDepartmentNotification(department) {
             // Checks to see if the time is within 1min of the
             // scheduled notification time
             current = moment();
+            console.log(scheduled,current)
             difference = scheduled.diff(current, "minute");
             console.log(difference);
             if(difference != 0) continue;
