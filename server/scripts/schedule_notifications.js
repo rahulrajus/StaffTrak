@@ -18,8 +18,7 @@ function sendDepartmentNotification(department) {
 
     institution_id = department.institution
     console.log(institution_id);
-    if(Object.keys(institution_id).length === 0) {
-
+    if(JSON.stringify(institution_id) == '{}') {
         return;
     }
     console.log("im here")
