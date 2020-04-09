@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 import { useAuth } from "./context/auth";
 
 function PrivateRoute({ component: Component, ...rest }) {
-  const {authTokens} = useAuth();
+  const { authTokens } = useAuth();
 
   return (
     <Route
@@ -12,8 +12,8 @@ function PrivateRoute({ component: Component, ...rest }) {
         authTokens ? (
           <Component {...props} />
         ) : (
-          <Redirect to="/" />
-        )
+            <Redirect to="/" />
+          )
       }
     />
   );

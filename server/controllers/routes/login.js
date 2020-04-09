@@ -1,7 +1,5 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator/check');
-
-const Administrator = require('../../models/Administrator');
+const { check, validationResult } = require('express-validator');
 
 const passport = require('../../passport');
 

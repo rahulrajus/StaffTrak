@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
+import axios from 'axios';
 import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -28,17 +29,24 @@ function Login(props) {
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const { setAuthTokens } = useAuth();
 
-  function postLogin() {
-    console.log("click")
-    if (userName == "t@g.com" && password == "admin") {
-      setAuthTokens({ name: "t@g.com", password: "123" })
-      setLoggedIn(true)
-    } else {
-      setIsError(true)
-    }
-
+  const postLogin = (e) => {
+    e.preventDefault();
+    axios.post('/login', {
+      email: userName,
+      password,
+    })
+      .then((response) => {
+        setAuthTokens(response.data);
+        setLoggedIn(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setIsError(true);
+        setLoading(false);
+      });
   }
 
   if (isLoggedIn) {
@@ -91,7 +99,7 @@ function Login(props) {
                   </Grid>
                 </Grid>
                 <Grid container justify="center" style={{ marginTop: '10px' }} flex-grow={1}>
-                  <Button variant="contained" color="primary" type="submit" onClick={postLogin} style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Login</Button>
+                  <Button variant="contained" color="primary" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Login</Button>
                 </Grid>
               </form>
             </Grid>

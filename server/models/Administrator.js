@@ -27,7 +27,11 @@ var administratorSchema = new mongoose.Schema({
   password: {
     type: String,
     required: 'password is required'
-  }
+  },
+  departmentId: {
+    type: Schema.Types.ObjectId, ref: 'Department',
+    required: true
+  },
 });
 
 // Mongoose methods cannot use arrow functions because they prevent binding this.

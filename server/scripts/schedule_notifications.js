@@ -17,21 +17,16 @@ function sendDepartmentNotification(department) {
     notifTimes = department.notifTimes
 
     institution_id = department.institution
-    console.log(institution_id);
-    if(JSON.stringify(institution_id) == '{}') {
+    // console.log(institution_id);
+    if (JSON.stringify(institution_id) == '{}') {
         return;
     }
-    console.log("im here")
-    console.log(institution_id)
-
-    console.log("im here2")
 
     Institution.findById(institution_id).then(async institution => {
         timeZone = institution.timeZone
-        console.log(department)
-        for(var i = 0; i<department.notifTimes.length;i++) {
+        // console.log(department)
+        for (var i = 0; i < department.notifTimes.length; i++) {
             var time = department.notifTimes[i]
-            // console.log(time)
             // scheduled = moment.tz(time, 'HHmm', timeZone);
             todayDate = moment.tz(timeZone).format('YYYY-MM-DD')
             scheduled = moment.tz(todayDate + ' ' + time, 'YYYY-MM-DD HHmm', timeZone)
@@ -46,7 +41,7 @@ function sendDepartmentNotification(department) {
             // console.log(scheduled,current)
             difference = scheduled.diff(current, "minute");
             // console.log(difference);
-            if(difference != 0) continue;
+            if (difference != 0) continue;
             // console.log('time to send!')
             // Mark this notification as sent
             // department.timeOfLastNotif = scheduledFormatted;
@@ -66,26 +61,26 @@ function sendDepartmentNotification(department) {
 
             users = department.members;
             users.forEach(async user_id => {
-              user = await User.findById(user_id);
-              name = {first: user.firstName, last: user.lastName};
-              phoneNumber = user.phoneNumber;
-              console.log(phoneNumber);
-              console.log("sending")
+                user = await User.findById(user_id);
+                name = { first: user.firstName, last: user.lastName };
+                phoneNumber = user.phoneNumber;
+                //   console.log(phoneNumber);
+                //   console.log("sending")
 
-              formLink = generateLink(url, phoneNumber, name, departmentName);
-              sendSMS(formLink, phoneNumber);
+                formLink = generateLink(url, phoneNumber, name, departmentName);
+                sendSMS(formLink, phoneNumber);
             })
         }
     })
 }
 
 async function scheduleNotifications() {
-	schedule.scheduleJob("*/12 * * * * *", async () => {
+    schedule.scheduleJob("*/12 * * * * *", async () => {
         allDepartments = await Department.find({});
         allDepartments.forEach(department => {
             sendDepartmentNotification(department);
         });
-	});
+    });
 }
 
 module.exports = scheduleNotifications;

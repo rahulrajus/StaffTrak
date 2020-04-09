@@ -26,12 +26,17 @@ app.use(session({
   cookie: { maxAge: 8 * 60 * 60 * 1000 } // 8 hours
 }));
 
+// hook up passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // static server
 app.use(express.static('public'));
 
 // routes
 app.use(require('./routes/register'));
 app.use(require('./routes/checkin'));
+app.use(require('./routes/login'));
 
 // check if logged in
 app.get('/whoami', function (req, res) {
