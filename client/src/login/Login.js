@@ -39,6 +39,9 @@ function Login(props) {
       setIsError(true)
     }
 
+    setAuthTokens({ name: "t@g.com", password: "123" })
+    setLoggedIn(true)
+
   }
 
   if (isLoggedIn) {

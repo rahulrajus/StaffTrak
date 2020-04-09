@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
@@ -16,24 +16,27 @@ import {
   MuiPickersUtilsProvider, KeyboardDatePicker
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 
-function createData(time, name, exposedInLast24h, symptoms) {
-  return { time, name, exposedInLast24h, symptoms };
+function createData(time, name, exposedInLast24h, symptoms, temperature) {
+  return { time, name, exposedInLast24h, symptoms, temperature };
 }
 
 const rows = [
-  createData('12:00 PM', 'Member A', 'Yes', []),
-  createData('1:00 PM', 'Member B', 'No', []),
-  createData('1:00 PM', 'Member C', 'Yes', ['fever', 'chills']),
-  createData('2:00 PM', 'Member D', 'No', ['fever', 'chills']),
-  createData('9:00 AM', 'Member E', 'Yes', ['fever', 'chills']),
-  createData('6:00 AM', 'Member F', 'No', []),
-  createData('5:00 AM', 'Member G', 'Yes', ['cough']),
-  createData('10:00 PM', 'Member H', 'No', []),
-  createData('7:00 PM', 'Member I', 'Yes', ['cough']),
-  createData('12:00 AM', 'Member J', 'No', []),
-  createData('12:00 PM', 'Member K', 'No', []),
-  createData('12:00 PM', 'Member L', 'No', []),
+  createData('12:00 PM', 'Member A', 'Yes', [], [98,99,97,98,99,98,97]),
+  createData('1:00 PM', 'Member B', 'No', [], [98,99,97,98,99,98,97]),
+  createData('1:00 PM', 'Member C', 'Yes', ['fever', 'chills'], [98.3,99,97,98,99,98,97]),
+  createData('2:00 PM', 'Member D', 'No', ['fever', 'chills'], [98,99,97,98,99,98,97]),
+  createData('9:00 AM', 'Member E', 'Yes', ['fever', 'chills'], [98,99,97,98,99,98,97]),
+  createData('6:00 AM', 'Member F', 'No', [], [98,99,97,98,99,98,97]),
+  createData('5:00 AM', 'Member G', 'Yes', ['cough'], [98,99,97,98,99,98,97]),
+  createData('10:00 PM', 'Member H', 'No', [], [98,99,97,98,99,98,97]),
+  createData('7:00 PM', 'Member I', 'Yes', ['cough'], [98,99,97,98,99,98,97]),
+  createData('12:00 AM', 'Member J', 'No', [],[98,99,97,98,99,98,97]),
+  createData('12:00 PM', 'Member K', 'No', [],[98,99,97,98,99,98,97]),
+  createData('12:00 PM', 'Member L', 'No', [], [100]),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -180,6 +183,8 @@ function SymptomChips(props) {
   );
 }
 
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -210,13 +215,47 @@ const useStyles = makeStyles((theme) => ({
   },
   highlightHover: {
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
-  }
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper2: {
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #cecece',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
 
 export default function DepartmentTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
+  const [open, setOpen] = useState(false);
+  const [temp, setTemp] = useState();
+
+  const handleOpen = (name) => {
+    let tempData = [];
+    rows.forEach((row) => {
+      if(row.name === name){ 
+     
+        console.log(row.temperature);
+        tempData = row.temperature
+       
+      }
+    });
+    console.log(tempData)
+    let averageTemp = (tempData.reduce((a,b) => b += a)) ;
+    averageTemp = averageTemp/tempData.length;
+    setTemp(averageTemp);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -268,10 +307,11 @@ export default function DepartmentTable() {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
                       tabIndex={-1}
                       key={row.name}
                       selected={highlight}
+                      onClick={() => handleOpen(row.name)}
+
                     >
                       <TableCell component="th" id={labelId}>
                         {row.time}
@@ -281,12 +321,34 @@ export default function DepartmentTable() {
                       <TableCell align="left">
                         <SymptomChips symptomsList={row.symptoms} />
                       </TableCell>
+               
                     </TableRow>
                   );
                 })}
             </TableBody>
           </Table>
         </TableContainer>
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper2}>
+            <h2 id="transition-modal-title">{temp}</h2>
+            <p id="transition-modal-description"></p>
+          </div>
+        </Fade>
+      </Modal>
+
+
       </Paper>
     </div>
   );
