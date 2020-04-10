@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
   const classes = useStyles();
-  const [isLoggedIn, setLoggedIn] = useState(localStorage.getItem("userToken") !== null);
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -45,7 +44,6 @@ function Login(props) {
     })
       .then((response) => {
         setAuthTokens(response.data);
-        setLoggedIn(true);
         setLoading(false);
       })
       .catch((error) => {
@@ -54,7 +52,7 @@ function Login(props) {
       });
   }
 
-  if (isLoggedIn) {
+  if (authTokens !== null && authTokens !== undefined) {
     return <Redirect to="/portal" />
   }
 

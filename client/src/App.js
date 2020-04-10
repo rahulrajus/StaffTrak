@@ -10,10 +10,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import './App.css';
 
 function App(props) {
-  const [authTokens, setAuthTokens] = useState(localStorage.getItem('userToken'));
+  const [authTokens, setAuthTokens] = useState(JSON.parse(localStorage.getItem('userToken')));
 
   const setTokens = (data) => {
-    localStorage.setItem("userToken", JSON.stringify(data));
+    if (!data) {
+      localStorage.removeItem("userToken");
+    } else {
+      localStorage.setItem("userToken", JSON.stringify(data));
+    }
     setAuthTokens(data);
   }
 
@@ -26,7 +30,7 @@ function App(props) {
       <Router>
         <Route exact path='/' component={Login} />
         <PrivateRoute path='/portal' component={Portal} />
-        <Route exact path='/reset' component={ResetPassword} />
+        <Route exact path='/reset/:resetToken' component={ResetPassword} />
         <Redirect from='/logout' to='/' />
       </Router>
     </AuthContext.Provider>
