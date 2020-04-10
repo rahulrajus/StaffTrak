@@ -1,17 +1,8 @@
-const path = require('path');
-require('dotenv').config();
 const db = require('../../db');
 
+const mongoose = require('mongoose');
 const Institution = require('../../models/Institution');
 const Department = require('../../models/Department');
-
-function createDepartmentinInstitution(departmentName, institution) {
-  newDepartment = {departmentName: departmentName, institution: institution._id}
-  department = Department.create(newDepartment);
-
-  institutionUpdate = {$push: {departments: department._id}}
-  Institution.findByIdAndUpdate(institution._id, institutionUpdate);
-}
 
 var stanford = {
   name: "Stanford",
@@ -50,17 +41,20 @@ Institution.create(stanford, function (err) {
   }
   console.log("saved!")
 })
-//
-// console.log("hello")
-// Institution.findOne({name: 'Sutter Health'}).then(sutterHealth => {
-//     console.log(sutterHealth)
-//     createDepartmentinInstitution('Psychiatry Residency', sutterHealth);
-//     createDepartmentinInstitution('Cardiology Fellowship', sutterHealth);
-//     createDepartmentinInstitution('GI Fellowship', sutterHealth);
-//     createDepartmentinInstitution('Pulmonary Fellowship', sutterHealth);
-//     createDepartmentinInstitution('Endocrine Fellowship', sutterHealth);
-// }).catch(err => {
-//     console.log(err);
-// });
 
-// module.exports = create_departments;
+async function createDepartmentinInstitution(departmentName, institution) {
+  console.log(institution._id)
+  newDepartment = {
+    departmentName: departmentName,
+    institution: mongoose.Types.ObjectId(institution._id)
+  }
+  department = await Department.create(newDepartment);
+
+  console.log(department)
+  institutionUpdate = {$push: {departments: department}}
+  await Institution.findByIdAndUpdate(institution._id, institutionUpdate);
+}
+
+console.log(stanford._id);
+createDepartmentinInstitution('Ob/Gyn Residency', stanford);
+createDepartmentinInstitution('General Surgery Residency', stanford);
