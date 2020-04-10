@@ -43,6 +43,8 @@ function Login(props) {
   const checkLoggedIn = () => {
     if (authTokens) {
       setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
     }
   }
 

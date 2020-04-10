@@ -11,7 +11,7 @@ import './App.css';
 
 function App(props) {
   const [authTokens, setAuthTokens] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const setTokens = (data) => {
     localStorage.setItem("tokens", JSON.stringify(data));
@@ -24,7 +24,6 @@ function App(props) {
   }, [])
 
   const getUser = () => {
-    setLoading(true);
     axios.get('/whoami')
       .then((response) => {
         setAuthTokens(response.data);
