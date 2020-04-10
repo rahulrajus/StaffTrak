@@ -19,7 +19,7 @@ var departmentSchema = new mongoose.Schema({
     default: []
   },
   institution: {
-    type: { type: Schema.Types.ObjectId, ref: 'Institution' },
+    type: { type: Schema.Types.ObjectId, ref: 'Institution' }
   },
   timeOfLastNotif: String
 });
