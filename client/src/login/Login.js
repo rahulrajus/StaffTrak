@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
   const classes = useStyles();
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(localStorage.getItem("userToken") !== null);
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -34,22 +34,11 @@ function Login(props) {
 
   useEffect(() => {
     document.title = 'Login';
-    checkLoggedIn();
   }, []);
-
-  console.log(isLoggedIn);
-  console.log('tok', authTokens);
-
-  const checkLoggedIn = () => {
-    if (authTokens) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }
 
   const postLogin = (e) => {
     e.preventDefault();
+    setLoading(true);
     axios.post('/login', {
       email: userName,
       password,
@@ -63,10 +52,6 @@ function Login(props) {
         setIsError(true);
         setLoading(false);
       });
-  }
-
-  if (props.loading) {
-    return <CircularProgress />;
   }
 
   if (isLoggedIn) {
