@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
@@ -30,7 +31,16 @@ function Portal(props) {
   const { setAuthTokens } = useAuth();
 
   function logOut() {
-    setAuthTokens();
+    axios.get('/logout')
+      .then(
+        (response) => {
+          if (!response.data.authenticated) {
+            setAuthTokens();
+          } else {
+            console.log('error logging out user');
+          }
+        },
+      );
   }
 
   return (

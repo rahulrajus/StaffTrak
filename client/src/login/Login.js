@@ -12,6 +12,7 @@ import Fingerprint from '@material-ui/icons/Fingerprint';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -60,6 +61,10 @@ function Login(props) {
         setIsError(true);
         setLoading(false);
       });
+  }
+
+  if (props.loading) {
+    return <CircularProgress />;
   }
 
   if (isLoggedIn) {

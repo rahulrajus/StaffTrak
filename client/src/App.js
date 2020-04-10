@@ -31,7 +31,7 @@ function App(props) {
         setLoading(false);
       })
       .catch((error) => {
-        setAuthTokens(null);
+        setAuthTokens();
         setLoading(false);
       });
   }
@@ -44,8 +44,8 @@ function App(props) {
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <Router>
         <Route exact path='/' component={Login} />
-        <PrivateRoute path='/portal' loading={loading} component={Portal} />
-        <Route exact path='/reset/:resetPasswordToken' component={ResetPassword} />
+        <PrivateRoute path='/portal' component={Portal} />
+        <Route exact path='/reset' component={ResetPassword} />
         {/* <Redirect from='/login' to='/' /> */}
         <Redirect from='/logout' to='/' />
       </Router>

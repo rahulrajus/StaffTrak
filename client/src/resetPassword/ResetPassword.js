@@ -49,10 +49,6 @@ function ResetPassword(props) {
       });
   }
 
-  if (isLoggedIn) {
-    return <Redirect to="/portal" />
-  }
-
   return (
     <div>
       <Grid>
