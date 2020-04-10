@@ -32,6 +32,16 @@ var administratorSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId, ref: 'Department',
     required: true
   },
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  },
+  neverLoggedIn: {
+    type: Boolean,
+    required: true
+  }
 });
 
 // Mongoose methods cannot use arrow functions because they prevent binding this.

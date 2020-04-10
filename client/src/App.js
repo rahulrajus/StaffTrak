@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect, withRouter } from 'react-router-dom';
+import axios from 'axios';
 import Portal from './portal/Portal';
 import Login from './login/Login';
 import ResetPassword from './resetPassword/ResetPassword';
 import PrivateRoute from './PrivateRoute';
 import { AuthContext } from './context/auth';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import './App.css';
 
 function App(props) {
   const [authTokens, setAuthTokens] = useState();
-  const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const setTokens = (data) => {
@@ -23,15 +24,30 @@ function App(props) {
   }, [])
 
   const getUser = () => {
-    setLoading(false);
+    setLoading(true);
+    axios.get('/whoami')
+      .then((response) => {
+        setAuthTokens(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setAuthTokens(null);
+        setLoading(false);
+      });
+  }
+
+  if (loading) {
+    return <CircularProgress />;
   }
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <Router>
         <Route exact path='/' component={Login} />
-        <PrivateRoute path='/portal' component={Portal} />
-        <Route path='/resetpassword' component={ResetPassword} />
+        <PrivateRoute path='/portal' loading={loading} component={Portal} />
+        <Route exact path='/reset/:resetPasswordToken' component={ResetPassword} />
+        {/* <Redirect from='/login' to='/' /> */}
+        <Redirect from='/logout' to='/' />
       </Router>
     </AuthContext.Provider>
   );

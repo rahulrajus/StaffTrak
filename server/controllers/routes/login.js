@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const { check, validationResult } = require('express-validator');
 
@@ -13,7 +14,7 @@ app.post('/login', [
   if (!errors.isEmpty()) {
     return res.status(422).send({ errors: errors.array() });
   }
-  passport.authenticate('login', (err, user, info) => {
+  passport.authenticate('login', (err, admin, info) => {
     if (err) {
       console.error(`error ${err}`);
     }
@@ -25,9 +26,13 @@ app.post('/login', [
         res.status(403).send(info.message);
       }
     } else {
-      req.logIn(user, (err) => {
+      req.logIn(admin, (err) => {
         if (err) { return next(err); }
-        res.status(200).send(user);
+        admin.neverLoggedIn = false;
+        admin.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+        admin.resetPasswordExpires = Date.now() + 360000;
+        admin.save();
+        res.status(200).send(admin);
       });
     }
   })(req, res, next);

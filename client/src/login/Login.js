@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import { useAuth } from "../context/auth";
@@ -7,7 +7,6 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Face from '@material-ui/icons/Face';
 import Fingerprint from '@material-ui/icons/Fingerprint';
 import AppBar from '@material-ui/core/AppBar';
@@ -30,7 +29,21 @@ function Login(props) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setAuthTokens } = useAuth();
+  const { authTokens, setAuthTokens } = useAuth();
+
+  useEffect(() => {
+    document.title = 'Login';
+    checkLoggedIn();
+  }, []);
+
+  console.log(isLoggedIn);
+  console.log('tok', authTokens);
+
+  const checkLoggedIn = () => {
+    if (authTokens) {
+      setLoggedIn(true);
+    }
+  }
 
   const postLogin = (e) => {
     e.preventDefault();

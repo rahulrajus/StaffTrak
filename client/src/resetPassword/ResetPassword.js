@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
+import axios from 'axios';
 import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -24,19 +25,28 @@ function ResetPassword(props) {
   const classes = useStyles();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { setAuthTokens } = useAuth();
 
-  function postLogin() {
-    if (userName == "t@g.com" && password == "admin") {
-      setAuthTokens({ name: "t@g.com", password: "123" })
-      setLoggedIn(true)
-    } else {
-      setIsError(true)
-    }
+  const postReset = (e) => {
+    e.preventDefault();
+    console.log(props.match.params);
 
+    const resetLink = `/reset/${props.match.params.resetPasswordToken}`
+
+    axios.post(resetLink, {
+      password,
+      confirmPassword,
+    })
+      .then((response) => {
+        setLoggedIn(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setIsError(true);
+        setLoading(false);
+      });
   }
 
   if (isLoggedIn) {
@@ -62,7 +72,7 @@ function ResetPassword(props) {
               <Grid container spacing={8} justify="center">
                 <Grid item>
                   <Typography variant="h5" align="center" className={classes.title}>
-                    Welcome to StaffTrak!
+                    Reset Password
                   </Typography>
                 </Grid>
               </Grid>
@@ -73,7 +83,7 @@ function ResetPassword(props) {
                   </Typography>
                 </Grid>
               </Grid>
-              <form onSubmit={postLogin}>
+              <form onSubmit={postReset}>
                 <Grid container spacing={8} alignItems="flex-end">
                   <Grid item>
                     <Fingerprint />
@@ -91,7 +101,7 @@ function ResetPassword(props) {
                   </Grid>
                 </Grid>
                 <Grid container justify="center" style={{ marginTop: '40px' }} flex-grow={1}>
-                  <Button variant="contained" color="primary" type="submit" onClick={postLogin} style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Reset Password</Button>
+                  <Button variant="contained" color="primary" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Reset Password</Button>
                 </Grid>
               </form>
             </Grid>

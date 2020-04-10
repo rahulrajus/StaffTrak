@@ -30,7 +30,6 @@ function Portal(props) {
   const { setAuthTokens } = useAuth();
 
   function logOut() {
-    console.log("log out");
     setAuthTokens();
   }
 

@@ -11,6 +11,7 @@ var admin = {
   email: "shannen@mit.edu",
   password: "d3fault",
   departmentId: '5e89519fa0f056d49784b3c3',
+  neverLoggedIn: true,
 };
 
 Administrator.create(admin, (err, doc) => {
