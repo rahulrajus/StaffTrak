@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 function ResetPassword(props) {
   const classes = useStyles();
-  const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
@@ -40,7 +39,6 @@ function ResetPassword(props) {
       confirmPassword,
     })
       .then((response) => {
-        setLoggedIn(true);
         setLoading(false);
       })
       .catch((error) => {

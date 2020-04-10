@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Redirect, withRouter } from 'react-router-dom';
-import axios from 'axios';
+import { BrowserRouter as Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Portal from './portal/Portal';
 import Login from './login/Login';
 import ResetPassword from './resetPassword/ResetPassword';
 import PrivateRoute from './PrivateRoute';
 import { AuthContext } from './context/auth';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import './App.css';
 
 function App(props) {
@@ -27,12 +25,12 @@ function App(props) {
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <Router>
+      <Switch>
         <Route exact path='/' component={Login} />
-        <PrivateRoute path='/portal' component={Portal} />
         <Route exact path='/reset/:resetToken' component={ResetPassword} />
+        <PrivateRoute path='/portal' component={Portal} />
         <Redirect from='/logout' to='/' />
-      </Router>
+      </Switch>
     </AuthContext.Provider>
   );
 }
