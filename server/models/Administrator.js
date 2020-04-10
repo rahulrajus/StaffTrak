@@ -27,6 +27,20 @@ var administratorSchema = new mongoose.Schema({
   password: {
     type: String,
     required: 'password is required'
+  },
+  departmentId: {
+    type: Schema.Types.ObjectId, ref: 'Department',
+    required: true
+  },
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  },
+  neverLoggedIn: {
+    type: Boolean,
+    required: true
   }
 });
 

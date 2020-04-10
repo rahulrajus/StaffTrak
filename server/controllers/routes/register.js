@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { check, validationResult } = require('express-validator/check');
 
 const sendSMS = require('../../scripts/send_sms');
 
@@ -19,21 +18,20 @@ app.post('/register', multipart.array(), async function (req, res) {
   formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
 
-  institution = await Institution.findOne({"registrationForm.url": `https://hipaa.jotform.com/${formId}`});
+  institution = await Institution.findOne({ "registrationForm.url": `https://hipaa.jotform.com/${formId}` });
   registrationKeys = institution.registrationForm
-  // console.log(formId);
-  // console.log(institution);
-  console.log('input ' + data[registrationKeys.departmentName]);
-  department = await Department.findOne({departmentName: data[registrationKeys.departmentName]});
-  console.log('department ' + department + " " + department.departmentName);
+  // console.log('input ' + data[registrationKeys.departmentName]);
+  department = await Department.findOne({ departmentName: data[registrationKeys.departmentName] });
+  // console.log('department ' + department + " " + department.departmentName);
   department_id = department._id
 
   // Text a confirmation message
   sendSMS('Thank you for registering!', data[registrationKeys.phoneNumber]);
 
   // Update the User collection with the new user
-  query = {phoneNumber: data[registrationKeys.phoneNumber]}
-  userUpdate = {$set: {
+  query = { phoneNumber: data[registrationKeys.phoneNumber] }
+  userUpdate = {
+    $set: {
       firstName: data[registrationKeys.name].first,
       lastName: data[registrationKeys.name].last,
       phoneNumber: data[registrationKeys.phoneNumber],
@@ -42,8 +40,9 @@ app.post('/register', multipart.array(), async function (req, res) {
       sex: data[registrationKeys.sex],
       homeZipCode: data[registrationKeys.homeZipCode],
       preexistingRiskCondition: data[registrationKeys.preexistingRiskCondition]
-  }}
-  user = await User.findOneAndUpdate(query, userUpdate, {upsert: true, "new": true})
+    }
+  }
+  user = await User.findOneAndUpdate(query, userUpdate, { upsert: true, "new": true })
   user_id = user._id
 
   // Update the Response collection with the new response
@@ -62,7 +61,7 @@ app.post('/register', multipart.array(), async function (req, res) {
   // Update the Department collection with the ID of the new user
   pushMembers = { $push: { members: user_id } }
   await Department.findByIdAndUpdate(department_id, pushMembers);
-  console.log("updated department" + department_id + " " + user_id)
+  // console.log("updated department" + department_id + " " + user_id)
   res.send(req.body);
 
 });

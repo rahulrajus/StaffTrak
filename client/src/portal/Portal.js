@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
@@ -9,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import './css/Portal.css'
+import { useAuth } from '../context/auth'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,13 +24,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Portal() {
+function Portal(props) {
   //get request made here to the database
   const [tableData, setTableData] = useState([]);
   const classes = useStyles();
+  const { setAuthTokens } = useAuth();
+
+  function logOut() {
+    axios.get('/logout')
+      .then(
+        (response) => {
+          if (!response.data.authenticated) {
+            setAuthTokens();
+          } else {
+            console.log('error logging out user');
+          }
+        },
+      );
+  }
 
   return (
-    <div >
+    <div>
       <Grid>
         <Grid item xs={12}>
           <AppBar position="static" color="primary">
@@ -36,7 +52,7 @@ function Portal() {
               <Typography variant="h6" className={classes.title}>
                 Department Name
               </Typography>
-              <Button color="inherit">Login</Button>
+              <Button color="inherit" onClick={logOut}>Logout</Button>
             </Toolbar>
           </AppBar>
         </Grid>

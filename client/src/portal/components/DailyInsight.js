@@ -7,10 +7,10 @@ const DailyInsight = ({ data }) => {
     <div>
       <Typography variant="subtitle1">
         Welcome, John Doe
-    </Typography>
+      </Typography>
       <Typography variant="body2">
         24 out of 50 members have checked in today.
-    </Typography>
+      </Typography>
     </div>
   );
 }

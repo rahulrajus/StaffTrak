@@ -14,8 +14,9 @@ app.use('/', express.static(path.join(__dirname, '../client/build')));
 
 // initialize routes
 const routes = require('./controllers');
-scheduleNotifications();
 app.use('/', routes);
+
+scheduleNotifications();
 
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));

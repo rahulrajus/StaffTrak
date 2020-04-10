@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { check, validationResult } = require('express-validator/check');
 
 const User = require('../../models/User');
 const Response = require('../../models/Response');
@@ -15,10 +14,10 @@ app.post('/checkin', multipart.array(), async function (req, res) {
   formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
 
-  institution = await Institution.findOne({"responseForm.url": `https://hipaa.jotform.com/${formId}`});
+  institution = await Institution.findOne({ "responseForm.url": `https://hipaa.jotform.com/${formId}` });
   responseKeys = institution.responseForm
 
-  department_id = await Department.findOne({name: data[responseKeys.departmentName]})._id;
+  department_id = await Department.findOne({ name: data[responseKeys.departmentName] })._id;
 
   newResponse = {
     user: user_id,
