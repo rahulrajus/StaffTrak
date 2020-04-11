@@ -11,10 +11,14 @@ import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import './css/Portal.css'
 import { useAuth } from '../context/auth'
+import logo from '../images/stafftrak-horizontal.png'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    backgroundColor:"rgba(134, 138, 95, 0.05)",
     flexGrow: 1,
+    height: "100vh"
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -22,7 +26,14 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  backgroundRow: {
+    backgroundColor: "rgba(61,70,76,0.9)",
+
+
+  }
 }));
+
+
 
 function Portal(props) {
   //get request made here to the database
@@ -45,13 +56,14 @@ function Portal(props) {
 
   return (
     <div>
-      <Grid>
+      <Grid className={classes.root}>
         <Grid item xs={12}>
-          <AppBar position="static" color="primary">
+          <AppBar position="static" className={classes.backgroundRow}>
             <Toolbar>
-              <Typography variant="h6" className={classes.title}>
-                Department Name
-              </Typography>
+              <span>
+                <img class="logo" src={logo} height='15%' width='15%' ></img>
+              </span>
+       
               <Button color="inherit" onClick={logOut}>Logout</Button>
             </Toolbar>
           </AppBar>

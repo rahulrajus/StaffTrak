@@ -219,13 +219,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   rowSymptoms:{
-    backgroundColor: 'rgba(245, 0, 87, 0.08)',
+    backgroundColor: 'rgba(245, 0, 87, 0.1)',
 
     "&:hover": {
-      backgroundColor: "rgba(245, 0, 87, 0.12) !important"
+      backgroundColor: "rgba(254, 164, 159, 0.5) !important"
     },
     "&:selected":{
-      backgroundColor: "rgba(245, 0, 87, 0.12) !important"
+      backgroundColor: "rgba(254, 164, 159, 0.3) !important"
 
     },
   }
@@ -259,13 +259,6 @@ export default function DepartmentTable() {
     console.log("implement me later");
   };
 
-  const shouldHighlight = (exposedInLast24h, symptoms) => {
-    if (exposedInLast24h === 'Yes' || symptoms.length !== 0) {
-      return true;
-    }
-    return false;
-  }
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -294,7 +287,7 @@ export default function DepartmentTable() {
               {stableSort(rows, getComparator(order, orderBy))
                 .map((row, index) => {
                   const labelId = `enhanced-table-${index}`;
-                  let rowColor = row.symptoms.length == 0 ? classes.rowNormal : classes.rowSymptoms;
+                  let rowColor = row.symptoms.length == 0 && row.exposedInLast24h != true ? classes.rowNormal : classes.rowSymptoms;
 
                   return (
                     <TableRow
