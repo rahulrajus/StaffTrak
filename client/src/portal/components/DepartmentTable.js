@@ -211,10 +211,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'rgba(245, 0, 87, 0.08)',
   },
   redHighlightHover: {
-    backgroundColor: 'rgba(245, 0, 87, 0.)'
+    backgroundColor: 'rgba(245, 0, 87, 0.12)'
   },
   highlightHover: {
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: 'rgba(245, 0, 87, 0.12)',
   },
   modal: {
     display: 'flex',
@@ -227,6 +227,28 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  rowSymptoms:{
+    backgroundColor: 'rgba(245, 0, 87, 0.08)',
+
+    "&:hover": {
+      backgroundColor: "rgba(245, 0, 87, 0.12) !important"
+    },
+    "&:selected":{
+      backgroundColor: "rgba(245, 0, 87, 0.12) !important"
+
+    },
+    rowNormal:{
+
+    }
+      
+    // },
+    // selected: {}
+ 
+    
+
+
+
+  }
 }));
 
 export default function DepartmentTable() {
@@ -291,17 +313,20 @@ export default function DepartmentTable() {
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .map((row, index) => {
-                  const highlight = shouldHighlight(row.exposedInLast24h, row.symptoms);
+                  // const highlight = shouldHighlight(row.exposedInLast24h, row.symptoms);
                   const labelId = `enhanced-table-${index}`;
+                  let rowColor = row.symptoms.length == 0 ? classes.rowNormal : classes.rowSymptoms
 
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
                       key={row.name}
-                      selected={highlight}
                       onClick={() => handleOpen(row.name)}
+                      className ={rowColor}
 
+
+                      
                     >
                       <TableCell component="th" id={labelId}>
                         {row.time}
