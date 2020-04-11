@@ -138,9 +138,8 @@ const EnhancedTableToolbar = () => {
   return (
     <Toolbar>
       <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-        Responses
+        Department Name
       </Typography>
-
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
           disableToolbar
@@ -218,15 +217,13 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  rowSymptoms:{
+  rowSymptoms: {
     backgroundColor: 'rgba(245, 0, 87, 0.1)',
-
     "&:hover": {
       backgroundColor: "rgba(254, 164, 159, 0.5) !important"
     },
-    "&:selected":{
+    "&:selected": {
       backgroundColor: "rgba(254, 164, 159, 0.3) !important"
-
     },
   }
 }));
@@ -287,7 +284,7 @@ export default function DepartmentTable() {
               {stableSort(rows, getComparator(order, orderBy))
                 .map((row, index) => {
                   const labelId = `enhanced-table-${index}`;
-                  let rowColor = row.symptoms.length == 0 && row.exposedInLast24h != true ? classes.rowNormal : classes.rowSymptoms;
+                  let rowColor = row.symptoms.length === 0 && row.exposedInLast24h !== true ? classes.rowNormal : classes.rowSymptoms;
 
                   return (
                     <TableRow
@@ -295,10 +292,7 @@ export default function DepartmentTable() {
                       tabIndex={-1}
                       key={row.name}
                       onClick={() => handleOpen(row.name)}
-                      className ={rowColor}
-
-
-                      
+                      className={rowColor}
                     >
                       <TableCell component="th" id={labelId}>
                         {row.time}
