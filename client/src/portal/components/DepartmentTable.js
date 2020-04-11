@@ -207,15 +207,6 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  redHighlight: {
-    backgroundColor: 'rgba(245, 0, 87, 0.08)',
-  },
-  redHighlightHover: {
-    backgroundColor: 'rgba(245, 0, 87, 0.12)'
-  },
-  highlightHover: {
-    backgroundColor: 'rgba(245, 0, 87, 0.12)',
-  },
   modal: {
     display: 'flex',
     alignItems: 'center',
@@ -237,17 +228,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "rgba(245, 0, 87, 0.12) !important"
 
     },
-    rowNormal:{
-
-    }
-      
-    // },
-    // selected: {}
- 
-    
-
-
-
   }
 }));
 
@@ -313,9 +293,8 @@ export default function DepartmentTable() {
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .map((row, index) => {
-                  // const highlight = shouldHighlight(row.exposedInLast24h, row.symptoms);
                   const labelId = `enhanced-table-${index}`;
-                  let rowColor = row.symptoms.length == 0 ? classes.rowNormal : classes.rowSymptoms
+                  let rowColor = row.symptoms.length == 0 ? classes.rowNormal : classes.rowSymptoms;
 
                   return (
                     <TableRow
