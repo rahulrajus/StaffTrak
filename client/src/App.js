@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Route, Redirect, Switch, withRouter } from 'react-router-dom';
+import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import Portal from './portal/Portal';
 import Login from './login/Login';
 import ResetPassword from './resetPassword/ResetPassword';
