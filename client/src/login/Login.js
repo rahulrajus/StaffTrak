@@ -50,6 +50,10 @@ function Login(props) {
   }
 
   if (authTokens !== null && authTokens !== undefined) {
+    if (authTokens.usingDefaultPassword) {
+      const resetLink = `/reset/${authTokens.resetPasswordToken}`;
+      return <Redirect to={resetLink} />
+    }
     return <Redirect to="/portal" />
   }
 

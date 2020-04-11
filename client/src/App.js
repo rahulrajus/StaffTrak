@@ -27,7 +27,7 @@ function App(props) {
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <Switch>
         <Route exact path='/' component={Login} />
-        <Route exact path='/reset/:resetToken' component={ResetPassword} />
+        <PrivateRoute exact path='/reset/:resetToken' component={ResetPassword} />
         <PrivateRoute path='/portal' component={Portal} />
         <Redirect from='/logout' to='/' />
       </Switch>

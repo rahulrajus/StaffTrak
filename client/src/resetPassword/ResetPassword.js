@@ -13,12 +13,6 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing.unit * 5,
-  },
-  padding: {
-    padding: theme.spacing.unit
-  }
 }));
 
 function ResetPassword(props) {
@@ -27,24 +21,33 @@ function ResetPassword(props) {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { authTokens, setAuthTokens } = useAuth();
 
   const postReset = (e) => {
     e.preventDefault();
     console.log(props.match.params);
 
-    const resetLink = `/reset/${props.match.params.resetPasswordToken}`
+    const resetLink = `/reset/${props.match.params.resetToken}`
 
     axios.post(resetLink, {
       password,
       confirmPassword,
+      resetPasswordToken: props.match.params.resetToken,
     })
       .then((response) => {
+        setAuthTokens(response.data.admin);
         setLoading(false);
       })
       .catch((error) => {
         setIsError(true);
         setLoading(false);
       });
+  }
+
+  if (authTokens !== null && authTokens !== undefined) {
+    if (!authTokens.usingDefaultPassword) {
+      return <Redirect to="/portal" />
+    }
   }
 
   return (
@@ -83,7 +86,7 @@ function ResetPassword(props) {
                     <Fingerprint />
                   </Grid>
                   <Grid item md={true} sm={true} xs={true}>
-                    <TextField error={isError ? true : false} id="passport" label="New Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+                    <TextField error={isError ? true : false} id="password" label="New Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
                   </Grid>
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end">
@@ -91,7 +94,7 @@ function ResetPassword(props) {
                     <Fingerprint />
                   </Grid>
                   <Grid item md={true} sm={true} xs={true}>
-                    <TextField error={isError ? true : false} id="passport" label="Confirm New Password" type="password" onChange={e => { setConfirmPassword(e.target.value) }} fullWidth required />
+                    <TextField error={isError ? true : false} id="confirm password" label="Confirm New Password" type="password" onChange={e => { setConfirmPassword(e.target.value) }} fullWidth required />
                   </Grid>
                 </Grid>
                 <Grid container justify="center" style={{ marginTop: '40px' }} flex-grow={1}>

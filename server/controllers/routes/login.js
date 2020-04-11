@@ -28,10 +28,11 @@ app.post('/login', [
     } else {
       req.logIn(admin, (err) => {
         if (err) { return next(err); }
-        admin.neverLoggedIn = false;
-        admin.resetPasswordToken = crypto.randomBytes(20).toString('hex');
-        admin.resetPasswordExpires = Date.now() + 360000;
-        admin.save();
+        if (admin.usingDefaultPassword) {
+          admin.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+          admin.resetPasswordExpires = Date.now() + 360000;
+          admin.save();
+        }
         res.status(200).send(admin);
       });
     }

@@ -11,8 +11,8 @@ app.get('/reset/:resetPasswordToken', (req, res) => {
   var resetPasswordToken = req.params.resetPasswordToken;
   Administrator.findOne({
     resetPasswordToken
-  }, (err, user) => {
-    if (user === null) {
+  }, (err, admin) => {
+    if (admin === null) {
       res.status(403).send('Password reset link is invalid or has expired.');
     } else {
       res.sendFile(publicPath + '/index.html');
@@ -36,18 +36,20 @@ app.post('/reset/:resetPasswordToken', [
   }
   Administrator.findOne({
     resetPasswordToken: req.body.resetPasswordToken,
-    resetPasswordExpires: {
-      $gte: Date.now()
-    }
-  }).then((user) => {
-    if (user === null) {
+    // resetPasswordExpires: {
+    //   $gte: Date.now()
+    // }
+  }).then((admin) => {
+    if (admin === null) {
       res.status(403).send('Password reset link is invalid or has expired.');
     } else {
-      user.password = req.body.password;
-      user.resetPasswordToken = null;
-      user.save((err) => {
+      admin.password = req.body.password;
+      admin.resetPasswordToken = null;
+      admin.resetPasswordExpires = null;
+      admin.usingDefaultPassword = false;
+      admin.save((err) => {
         if (err) return next(err);
-        res.status(200).send({ message: 'Password changed successfully.' });
+        res.status(200).send({ admin, message: 'Password changed successfully.' });
       });
     }
   });
