@@ -10,22 +10,17 @@ import Button from '@material-ui/core/Button';
 import Face from '@material-ui/icons/Face';
 import Fingerprint from '@material-ui/icons/Fingerprint';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar'
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing.unit * 5,
-  },
-  padding: {
-    padding: theme.spacing.unit
-  }
 }));
 
 function Login(props) {
   const classes = useStyles();
   const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,10 +39,12 @@ function Login(props) {
     })
       .then((response) => {
         setAuthTokens(response.data);
+        setErrorMsg("");
         setLoading(false);
       })
       .catch((error) => {
         setIsError(true);
+        setErrorMsg(error.response.data);
         setLoading(false);
       });
   }
@@ -93,7 +90,9 @@ function Login(props) {
                     <Fingerprint />
                   </Grid>
                   <Grid item md={true} sm={true} xs={true}>
-                    <TextField error={isError ? true : false} id="passport" label="Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+                    <Tooltip open={errorMsg === "Incorrect password."} title="Incorrect password." aria-label="incorrect password" arrow placement="right">
+                      <TextField error={isError ? true : false} id="passport" label="Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+                    </Tooltip>
                   </Grid>
                 </Grid>
                 <Grid container alignItems="center" justify="flex-end">
