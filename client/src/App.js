@@ -15,19 +15,33 @@ import { ThemeProvider } from '@material-ui/styles';
 import './App.css';
 import logo from './images/stafftrak-horizontal.png';
 
+const theme = createMuiTheme({
+  palette: {
+    teal: "#008995",
+    lightPink: "rgba(245,0,87,0.1)",
+    pink: "#FEA49F",
+    lightGrey: "rgba(121, 121, 121, 1)",
+    darkGrey: "#rgba(61, 70, 76, 0.9)",
+  },
+  typography: {
+    "fontFamily": ['Open Sans', "sans-serif"],
+    "fontSize": 16,
+    "fontWeightLight": 300,
+    "fontWeightRegular": 400,
+    "fontWeightMedium": 500
+  }
+});
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "rgba(134, 138, 95, 0.03)",
     flexGrow: 1,
     height: "100vh"
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   title: {
     flexGrow: 1,
   },
-  backgroundRow: {
+  navBar: {
     backgroundColor: "rgba(61,70,76,0.9)",
   }
 }));
@@ -45,27 +59,15 @@ function App(props) {
     setAuthTokens(data);
   }
 
-  const theme = createMuiTheme({
-    typography: {
-      "fontFamily": ['Open Sans', "sans-serif"],
-      "fontSize": 16,
-      "fontWeightLight": 300,
-      "fontWeightRegular": 400,
-      "fontWeightMedium": 500
-    }
-  });
-
   function logOut() {
     axios.get('/logout')
       .then(
         (response) => {
-          if (!response.data.authenticated) {
-            setAuthTokens();
-          } else {
-            console.log('error logging out user');
-          }
-        },
-      );
+          setTokens();
+        })
+      .catch((error) => {
+        console.log('error logging out user');
+      });
   }
 
   useEffect(() => {
@@ -77,7 +79,7 @@ function App(props) {
       <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
         <Grid className={classes.root}>
           <Grid item xs={12}>
-            <AppBar position="static" className={classes.backgroundRow}>
+            <AppBar position="static" className={classes.navBar}>
               <Toolbar>
                 <span>
                   <img src={logo} height='15%' width='15%'></img>

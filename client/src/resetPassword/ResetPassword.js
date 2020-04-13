@@ -12,6 +12,16 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
+  title: {
+    flexGrow: 1,
+  },
+  resetButton: {
+    backgroundColor: theme.palette.teal,
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#0089959e !important"
+    },
+  }
 }));
 
 function ResetPassword(props) {
@@ -90,7 +100,7 @@ function ResetPassword(props) {
               </Grid>
             </Grid>
             <Grid container justify="center" style={{ marginTop: '40px' }} flex-grow={1}>
-              <Button variant="contained" color="primary" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Reset Password</Button>
+              <Button className={classes.resetButton} variant="contained" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Reset Password</Button>
             </Grid>
           </form>
         </Grid>

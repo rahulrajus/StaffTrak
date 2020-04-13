@@ -13,19 +13,22 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: "rgba(134, 138, 95, 0.03)",
-    flexGrow: 1,
-    height: "100vh"
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   title: {
     flexGrow: 1,
   },
-  backgroundRow: {
-    backgroundColor: "rgba(61,70,76,0.9)",
+  forgotPassword: {
+    color: theme.palette.lightGrey,
+    "&:hover": {
+      textDecoration: "underline",
+      backgroundColor: 'inherit',
+    },
+  },
+  loginButton: {
+    backgroundColor: theme.palette.teal,
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#0089959e !important"
+    },
   }
 }));
 
@@ -77,7 +80,7 @@ function Login(props) {
             <Grid item>
               <Typography variant="h5" className={classes.title}>
                 Welcome to StaffTrak!
-                  </Typography>
+              </Typography>
             </Grid>
           </Grid>
           <form onSubmit={postLogin}>
@@ -101,11 +104,11 @@ function Login(props) {
             </Grid>
             <Grid container alignItems="center" justify="flex-end">
               <Grid item>
-                <Button disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text" color="primary">Forgot password?</Button>
+                <Button className={classes.forgotPassword} disableFocusRipple disableRipple style={{ textTransform: "none" }} variant="text">Forgot password?</Button>
               </Grid>
             </Grid>
             <Grid container justify="center" style={{ marginTop: '10px' }} flex-grow={1}>
-              <Button variant="contained" color="primary" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Login</Button>
+              <Button className={classes.loginButton} variant="contained" type="submit" style={{ textTransform: "none", display: "flex", flexGrow: 1 }}>Login</Button>
             </Grid>
           </form>
         </Grid>
