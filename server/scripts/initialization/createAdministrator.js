@@ -5,12 +5,12 @@ const db = require('../../db');
 const Administrator = require('../../models/Administrator');
 
 var admin = {
-  firstName: "Ben",
-  lastName: "Bitbiddle",
+  firstName: "Shannen",
+  lastName: "Wu",
   phone: 6263254856,
   email: "shannen@mit.edu",
   password: "d3fault",
-  departmentId: '5e89519fa0f056d49784b3c3',
+  departmentId: '5e89694f1c9d440000accd6e',
   usingDefaultPassword: true,
 };
 

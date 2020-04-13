@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
-const DailyInsight = ({ data }) => {
+const DailyInsight = ({ name, numCheckedIn, total }) => {
   return (
     <div>
       <Typography variant="subtitle1">
-        Welcome, John Doe
+        {'Welcome, ' + name}
       </Typography>
       <Typography variant="body2">
-        24 out of 50 members have checked in today.
+        {numCheckedIn + ' out of ' + total + ' members checked in today.'}
       </Typography>
     </div>
   );

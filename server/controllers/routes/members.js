@@ -16,7 +16,7 @@ const multipart = multer();
 /* Endpoint for populating the members table */
 app.get('/members', async function (req, res) {
 
-  memberResponse = {members: []}
+  memberResponse = { members: [] }
 
   administrator_id = req.query.administrator_id
   query_date = moment(req.query.date)
@@ -47,28 +47,29 @@ app.get('/members', async function (req, res) {
 
     thisMember.name = name;
     thisMember.member_id = member._id;
-    updatedMem = Response.find({"user":thisMember.member_id})
-            .sort({"createdAt":-1})
-            .then((sortedResponses) => {
-                lastResponse = null
-                sortedResponses = sortedResponses.filter(response => {
-                    return moment(response.updatedAt).diff(moment(query_date)) < 0
-                })
-                thisMember.temperatures = sortedResponses.map(response => {
-                    return {
-                        "date": response.updatedAt,
-                        "temp":response.temperature}
-                })
-                lastResponse = sortedResponses[0]
-                thisMember.timeOfLastCheckIn = lastResponse.createdAt
-                thisMember.exposedInLast24h = lastResponse.exposedInLast24h
-                thisMember.symptoms = lastResponse.symptoms
-                thisMember.checkedInToday = true
-                return thisMember
-            })
-            return updatedMem;
-    }));
-    res.send(memberResponse)
+    updatedMem = Response.find({ "user": thisMember.member_id })
+      .sort({ "createdAt": -1 })
+      .then((sortedResponses) => {
+        lastResponse = null
+        sortedResponses = sortedResponses.filter(response => {
+          return moment(response.updatedAt).diff(moment(query_date)) < 0
+        })
+        thisMember.temperatures = sortedResponses.map(response => {
+          return {
+            "date": response.updatedAt,
+            "temp": response.temperature
+          }
+        })
+        lastResponse = sortedResponses[0]
+        thisMember.timeOfLastCheckIn = lastResponse.createdAt
+        thisMember.exposedInLast24h = lastResponse.exposedInLast24h
+        thisMember.symptoms = lastResponse.symptoms
+        thisMember.checkedInToday = true
+        return thisMember
+      })
+    return updatedMem;
+  }));
+  res.send(memberResponse)
 
 });
 

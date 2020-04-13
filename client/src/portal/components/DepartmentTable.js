@@ -19,7 +19,8 @@ import Fade from '@material-ui/core/Fade';
 import {
   MuiPickersUtilsProvider, KeyboardDatePicker
 } from '@material-ui/pickers';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 
 function createData(time, name, exposedInLast24h, symptoms, temperature) {
@@ -126,10 +127,8 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const EnhancedTableToolbar = () => {
+const EnhancedTableToolbar = ({ departmentName, selectedDate, setSelectedDate }) => {
   const classes = useToolbarStyles();
-
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -138,7 +137,7 @@ const EnhancedTableToolbar = () => {
   return (
     <Toolbar>
       <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-        Department Name
+        {departmentName}
       </Typography>
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
@@ -182,7 +181,6 @@ function SymptomChips(props) {
     </div>
   );
 }
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -228,21 +226,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function DepartmentTable() {
+export default function DepartmentTable({ selectedDate, setSelectedDate, departmentName, tableData }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
   const [open, setOpen] = useState(false);
   const [graphData, setGraphData] = useState([]);
 
-  const handleOpen = (name) => {
-    let data = rows.filter(row => row.name === name);
-    console.log(data[0].temperature);
-    setGraphData(data[0].temperature);
+  const handleOpen = (id) => {
+    const member = tableData.find(row => row.member_id === id);
+    const data = member.temperatures.map(temp => { return { 'date': moment(temp.date).format("M/D h:mma"), 'temp': temp.temp } });
+    setGraphData(data);
     setOpen(true);
   };
 
   const handleClose = () => {
+    setGraphData([]);
     setOpen(false);
   };
 
@@ -252,14 +251,10 @@ export default function DepartmentTable() {
     setOrderBy(property);
   };
 
-  const handleClick = (event, name) => {
-    console.log("implement me later");
-  };
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar />
+        <EnhancedTableToolbar departmentName={departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -270,34 +265,36 @@ export default function DepartmentTable() {
             <colgroup>
               <col style={{ width: '15%' }} />
               <col style={{ width: '25%' }} />
-              <col style={{ width: '15%' }} />
-              <col style={{ width: '45%' }} />
+              <col style={{ width: '20%' }} />
+              <col style={{ width: '40%' }} />
             </colgroup>
             <EnhancedTableHead
               classes={classes}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={tableData.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(tableData, getComparator(order, orderBy))
                 .map((row, index) => {
                   const labelId = `enhanced-table-${index}`;
-                  let rowColor = row.symptoms.length === 0 && row.exposedInLast24h !== true ? classes.rowNormal : classes.rowSymptoms;
+                  const noSymptoms = row.symptoms.includes("I have no symptoms today") ? true : false;
+                  const rowColor = noSymptoms && row.exposedInLast24h === "No" ? classes.rowNormal : classes.rowSymptoms;
+                  const time = moment(row.timeOfLastCheckIn).format('LT');
 
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
-                      key={row.name}
-                      onClick={() => handleOpen(row.name)}
+                      key={row.member_id}
+                      onClick={() => handleOpen(row.member_id)}
                       className={rowColor}
                     >
                       <TableCell component="th" id={labelId}>
-                        {row.time}
+                        {time}
                       </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
                       <TableCell align="left">{row.exposedInLast24h}</TableCell>
                       <TableCell align="left">
                         <SymptomChips symptomsList={row.symptoms} />
@@ -328,7 +325,7 @@ export default function DepartmentTable() {
               <LineChart width={600} height={300} data={graphData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <Line type="monotone" dataKey="temp" stroke="#8884d8" strokeWidth={3} />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="date" />
+                <XAxis dataKey="date" hide={true} />
                 <YAxis type="number" domain={['dataMin-4', 'dataMax+4']} />
                 <Tooltip />
               </LineChart>
