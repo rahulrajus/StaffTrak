@@ -38,7 +38,7 @@ var administratorSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date
   },
-  neverLoggedIn: {
+  usingDefaultPassword: {
     type: Boolean,
     required: true
   }

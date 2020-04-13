@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,31 +13,31 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import {
-  MuiPickersUtilsProvider, KeyboardDatePicker
-} from '@material-ui/pickers';
-import MomentUtils from '@date-io/moment';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import {
+  MuiPickersUtilsProvider, KeyboardDatePicker
+} from '@material-ui/pickers';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import MomentUtils from '@date-io/moment';
 
 function createData(time, name, exposedInLast24h, symptoms, temperature) {
   return { time, name, exposedInLast24h, symptoms, temperature };
 }
 
 const rows = [
-  createData('12:00 PM', 'Member A', 'Yes', [], [98,99,97,98,99,98,97]),
-  createData('1:00 PM', 'Member B', 'No', [], [98,99,97,98,99,98,97]),
-  createData('1:00 PM', 'Member C', 'Yes', ['fever', 'chills'], [98.3,99,97,98,99,98,97]),
-  createData('2:00 PM', 'Member D', 'No', ['fever', 'chills'], [98,99,97,98,99,98,97]),
-  createData('9:00 AM', 'Member E', 'Yes', ['fever', 'chills'], [98,99,97,98,99,98,97]),
-  createData('6:00 AM', 'Member F', 'No', [], [98,99,97,98,99,98,97]),
-  createData('5:00 AM', 'Member G', 'Yes', ['cough'], [98,99,97,98,99,98,97]),
-  createData('10:00 PM', 'Member H', 'No', [], [98,99,97,98,99,98,97]),
-  createData('7:00 PM', 'Member I', 'Yes', ['cough'], [98,99,97,98,99,98,97]),
-  createData('12:00 AM', 'Member J', 'No', [],[98,99,97,98,99,98,97]),
-  createData('12:00 PM', 'Member K', 'No', [],[98,99,97,98,99,98,97]),
-  createData('12:00 PM', 'Member L', 'No', [], [100]),
+  createData('12:00 PM', 'Member A', 'Yes', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('1:00 PM', 'Member B', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('1:00 PM', 'Member C', 'Yes', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('2:00 PM', 'Member D', 'No', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('9:00 AM', 'Member E', 'Yes', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('6:00 AM', 'Member F', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('5:00 AM', 'Member G', 'Yes', ['cough'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('10:00 PM', 'Member H', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('7:00 PM', 'Member I', 'Yes', ['cough'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('12:00 AM', 'Member J', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
+  createData('12:00 PM', 'Member K', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -137,9 +138,8 @@ const EnhancedTableToolbar = () => {
   return (
     <Toolbar>
       <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-        Responses
+        Department Name
       </Typography>
-
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <KeyboardDatePicker
           disableToolbar
@@ -184,7 +184,6 @@ function SymptomChips(props) {
 }
 
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -207,15 +206,6 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  redHighlight: {
-    backgroundColor: 'rgba(245, 0, 87, 0.08)',
-  },
-  redHighlightHover: {
-    backgroundColor: 'rgba(245, 0, 87, 0.)'
-  },
-  highlightHover: {
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-  },
   modal: {
     display: 'flex',
     alignItems: 'center',
@@ -227,6 +217,15 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  rowSymptoms: {
+    backgroundColor: 'rgba(245, 0, 87, 0.1)',
+    "&:hover": {
+      backgroundColor: "rgba(254, 164, 159, 0.5) !important"
+    },
+    "&:selected": {
+      backgroundColor: "rgba(254, 164, 159, 0.3) !important"
+    },
+  }
 }));
 
 export default function DepartmentTable() {
@@ -234,22 +233,12 @@ export default function DepartmentTable() {
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
   const [open, setOpen] = useState(false);
-  const [temp, setTemp] = useState();
+  const [graphData, setGraphData] = useState([]);
 
   const handleOpen = (name) => {
-    let tempData = [];
-    rows.forEach((row) => {
-      if(row.name === name){ 
-     
-        console.log(row.temperature);
-        tempData = row.temperature
-       
-      }
-    });
-    console.log(tempData)
-    let averageTemp = (tempData.reduce((a,b) => b += a)) ;
-    averageTemp = averageTemp/tempData.length;
-    setTemp(averageTemp);
+    let data = rows.filter(row => row.name === name);
+    console.log(data[0].temperature);
+    setGraphData(data[0].temperature);
     setOpen(true);
   };
 
@@ -266,13 +255,6 @@ export default function DepartmentTable() {
   const handleClick = (event, name) => {
     console.log("implement me later");
   };
-
-  const shouldHighlight = (exposedInLast24h, symptoms) => {
-    if (exposedInLast24h === 'Yes' || symptoms.length !== 0) {
-      return true;
-    }
-    return false;
-  }
 
   return (
     <div className={classes.root}>
@@ -301,17 +283,16 @@ export default function DepartmentTable() {
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .map((row, index) => {
-                  const highlight = shouldHighlight(row.exposedInLast24h, row.symptoms);
                   const labelId = `enhanced-table-${index}`;
+                  let rowColor = row.symptoms.length === 0 && row.exposedInLast24h !== true ? classes.rowNormal : classes.rowSymptoms;
 
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
                       key={row.name}
-                      selected={highlight}
                       onClick={() => handleOpen(row.name)}
-
+                      className={rowColor}
                     >
                       <TableCell component="th" id={labelId}>
                         {row.time}
@@ -321,7 +302,6 @@ export default function DepartmentTable() {
                       <TableCell align="left">
                         <SymptomChips symptomsList={row.symptoms} />
                       </TableCell>
-               
                     </TableRow>
                   );
                 })}
@@ -329,27 +309,33 @@ export default function DepartmentTable() {
           </Table>
         </TableContainer>
         <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper2}>
-            <h2 id="transition-modal-title">{temp}</h2>
-            <p id="transition-modal-description"></p>
-          </div>
-        </Fade>
-      </Modal>
-
-
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <div className={classes.paper2}>
+              <Box mb={2}>
+                <Typography variant="h6">Temperature over last 2 weeks</Typography>
+              </Box>
+              <LineChart width={600} height={300} data={graphData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <Line type="monotone" dataKey="temp" stroke="#8884d8" strokeWidth={3} />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis dataKey="date" />
+                <YAxis type="number" domain={['dataMin-4', 'dataMax+4']} />
+                <Tooltip />
+              </LineChart>
+            </div>
+          </Fade>
+        </Modal>
       </Paper>
-    </div>
+    </div >
   );
 }
