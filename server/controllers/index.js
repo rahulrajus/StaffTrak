@@ -38,7 +38,8 @@ app.use(require('./routes/register'));
 app.use(require('./routes/checkin'));
 app.use(require('./routes/login'));
 app.use(require('./routes/resetPassword'));
-
+app.use(require('./routes/members'));
+app.use(require('./routes/send_notification'));
 // check if logged in
 app.get('/whoami', function (req, res) {
   if (req.isAuthenticated()) {

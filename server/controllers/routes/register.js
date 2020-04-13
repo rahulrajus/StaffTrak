@@ -52,6 +52,7 @@ app.post('/register', multipart.array(), async function (req, res) {
     temperature: data[registrationKeys.temperature],
     exposedInLast24h: data[registrationKeys.exposedInLast24h]
   }
+
   response = await Response.create(newResponse);
 
   // Update the User collection with the ID of the new response
@@ -63,7 +64,6 @@ app.post('/register', multipart.array(), async function (req, res) {
   await Department.findByIdAndUpdate(department_id, pushMembers);
   // console.log("updated department" + department_id + " " + user_id)
   res.send(req.body);
-
 });
 
 module.exports = app;

@@ -83,4 +83,7 @@ async function scheduleNotifications() {
     });
 }
 
-module.exports = scheduleNotifications;
+module.exports = {
+    scheduleNotifications: scheduleNotifications,
+    generateLink: generateLink
+}

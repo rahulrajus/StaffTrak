@@ -13,14 +13,15 @@ const multipart = multer();
 app.post('/checkin', multipart.array(), async function (req, res) {
   formId = req.body.formID
   data = JSON.parse(req.body.rawRequest)
-
   institution = await Institution.findOne({ "responseForm.url": `https://hipaa.jotform.com/${formId}` });
   responseKeys = institution.responseForm
 
   department_id = await Department.findOne({ name: data[responseKeys.departmentName] })._id;
+  user = await User.findOne({"phoneNumber":data[responseKeys.phoneNumber]})
+  console.log(user)
 
   newResponse = {
-    user: user_id,
+    user: user._id,
     symptoms: data[responseKeys.symptoms],
     temperature: data[responseKeys.temperature],
     exposedInLast24h: data[responseKeys.exposedInLast24h]

@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
-const scheduleNotifications = require('./scripts/schedule_notifications');
+const notifications = require('./scripts/schedule_notifications');
 require('dotenv').config();
 
 const app = express();
@@ -16,7 +16,7 @@ app.use('/', express.static(path.join(__dirname, '../client/build')));
 const routes = require('./controllers');
 app.use('/', routes);
 
-scheduleNotifications();
+notifications.scheduleNotifications();
 
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
