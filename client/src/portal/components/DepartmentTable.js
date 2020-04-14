@@ -46,7 +46,7 @@ function descendingTimeComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  if (orderBy == 'time') {
+  if (orderBy === 'time') {
     return order === 'desc'
       ? (a, b) => descendingTimeComparator(a, b, orderBy)
       : (a, b) => -descendingTimeComparator(a, b, orderBy);

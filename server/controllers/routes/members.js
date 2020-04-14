@@ -21,14 +21,14 @@ app.get('/members', async function (req, res) {
   administrator_id = req.query.administrator_id
   query_date = moment(req.query.date)
   // console.log(administrator_id)
-  // console.log(req.query.date);
+  // console.log(query_date);
   // get array of members based on administrator_id
   admin = await Administrator.findById(administrator_id);
   department_id = admin.departmentId;
   department = await Department.findById(department_id).populate('members')
   members = department.members
   // for each member:
-  console.log(members)
+  // console.log(members)
   memberResponse.members = await Promise.all(members.map(member => {
 
     thisMember = {

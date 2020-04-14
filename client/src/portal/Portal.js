@@ -55,7 +55,8 @@ function Portal(props) {
 
   const getTableData = async () => {
     const adminId = authTokens._id;
-    const url = `/members?administrator_id=${adminId}&date=${selectedDate}`;
+    const dateString = selectedDate.toISOString();
+    const url = `/members?administrator_id=${adminId}&date=${dateString}`;
     const response = await axios.get(url);
     return response;
   }
