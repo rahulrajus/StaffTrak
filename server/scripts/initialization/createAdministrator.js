@@ -8,9 +8,9 @@ var admin = {
   firstName: "Shannen",
   lastName: "Wu",
   phone: 6263254856,
-  email: "shannen@mit.edu",
+  email: "shannenwu99@gmail.com",
   password: "d3fault",
-  departmentId: '5e89694f1c9d440000accd6e',
+  departmentId: '5e8d47444d8227419d3ddd45',
   usingDefaultPassword: true,
 };
 

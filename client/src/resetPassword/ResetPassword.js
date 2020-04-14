@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -21,7 +23,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "#0089959e !important"
     },
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 function ResetPassword(props) {
@@ -35,7 +41,6 @@ function ResetPassword(props) {
 
   const postReset = (e) => {
     e.preventDefault();
-    console.log(props.match.params);
 
     const resetLink = `/reset/${props.match.params.resetToken}`
 
@@ -51,7 +56,7 @@ function ResetPassword(props) {
       })
       .catch((error) => {
         setIsError(true);
-        setErrorMsg(error.response.data);
+        setErrorMsg(error.response.data.errors[0].msg);
         setLoading(false);
       });
   }
@@ -60,6 +65,14 @@ function ResetPassword(props) {
     if (!authTokens.usingDefaultPassword) {
       return <Redirect to="/portal" />
     }
+  }
+
+  if (loading) {
+    return (
+      <Backdrop className={classes.backdrop} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
   }
 
   return (
@@ -86,7 +99,9 @@ function ResetPassword(props) {
                 <Fingerprint />
               </Grid>
               <Grid item md={true} sm={true} xs={true}>
-                <TextField error={isError ? true : false} id="password" label="New Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+                <Tooltip open={errorMsg === "Password must be at least 6 characters long."} title={"Password must be at least 6 characters long."} aria-label="password error" arrow placement="right">
+                  <TextField error={isError ? true : false} id="password" label="New Password" type="password" onChange={e => { setPassword(e.target.value) }} fullWidth required />
+                </Tooltip>
               </Grid>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
@@ -94,7 +109,7 @@ function ResetPassword(props) {
                 <Fingerprint />
               </Grid>
               <Grid item md={true} sm={true} xs={true}>
-                <Tooltip open={errorMsg === "Incorrect password."} title="Incorrect password." aria-label="incorrect password" arrow placement="right">
+                <Tooltip open={errorMsg === "Password confirmation is incorrect."} title={"Password confirmation is incorrect."} aria-label="password error" arrow placement="right">
                   <TextField error={isError ? true : false} id="confirm password" label="Confirm New Password" type="password" onChange={e => { setConfirmPassword(e.target.value) }} fullWidth required />
                 </Tooltip>
               </Grid>

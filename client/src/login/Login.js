@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { makeStyles } from '@material-ui/core/styles';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -30,7 +32,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "#0089959e !important"
     },
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 function Login(props) {
@@ -71,6 +77,14 @@ function Login(props) {
       return <Redirect to={resetLink} />
     }
     return <Redirect to="/portal" />
+  }
+
+  if (loading) {
+    return (
+      <Backdrop className={classes.backdrop} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
   }
 
   return (

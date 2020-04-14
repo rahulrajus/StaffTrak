@@ -21,7 +21,9 @@ app.get('/reset/:resetPasswordToken', (req, res) => {
 });
 
 app.post('/reset/:resetPasswordToken', [
-  check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
+  check('password')
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
+    .bail()
     .custom((value, { req }) => {
       if (value !== req.body.confirmPassword) {
         throw new Error('Password confirmation is incorrect.');
@@ -30,6 +32,7 @@ app.post('/reset/:resetPasswordToken', [
       }
     })
 ], (req, res, next) => {
+  console.log(req.body.password.length);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).send({ errors: errors.array() });
