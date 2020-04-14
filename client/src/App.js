@@ -82,7 +82,7 @@ function App(props) {
             <AppBar position="static" className={classes.navBar}>
               <Toolbar>
                 <span>
-                  <img src={logo} height='15%' width='15%'></img>
+                  <img src={logo} height='15%' width='15%' alt='logo'></img>
                 </span>
                 {authTokens !== null && authTokens !== undefined ?
                   <Button color="inherit" onClick={logOut}>Logout</Button> : null}

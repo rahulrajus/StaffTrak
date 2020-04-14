@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -9,7 +10,8 @@ import './css/Portal.css';
 
 function Portal(props) {
   //get request made here to the database
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(moment());
+  const [dateString, setDateString] = useState('today');
   const [tableData, setTableData] = useState([]);
   const [department, setDepartment] = useState({});
   const [summary, setSummary] = useState({});
@@ -18,48 +20,43 @@ function Portal(props) {
 
   useEffect(() => {
     document.title = 'StaffTrak';
-    setLoading(true);
-    getDepartment();
-    getSummary();
-    getTableData();
-    setLoading(false);
+    async function fetchData() {
+      setLoading(true);
+      const [departmentResponse, tableDataResponse] = await Promise.all([getDepartment(), getTableData()]);
+
+      // daily insight
+      const numCheckedIn = tableDataResponse.data.members.length;
+      const total = departmentResponse.data.members.length;
+
+      setDepartment(departmentResponse.data);
+      setTableData(tableDataResponse.data.members);
+      setSummary({ numCheckedIn, total });
+      setLoading(false);
+    }
+    fetchData();
   }, []);
 
-  const getDepartment = () => {
+  const getDepartment = async () => {
     const url = `/department?id=${authTokens.departmentId}`;
-    axios.get(url)
-      .then((response) => {
-        setDepartment(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const response = await axios.get(url);
+    return response;
   }
 
-  const getTableData = () => {
+  const getTableData = async () => {
     const adminId = authTokens._id;
     const url = `/members?administrator_id=${adminId}&date=${selectedDate}`;
-    axios.get(url)
-      .then((response) => {
-        setTableData(response.data.members);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }
-
-  const getSummary = () => {
-    setSummary({ numCheckedIn: 25, total: 50 })
+    const response = await axios.get(url);
+    return response;
   }
 
   return (
     <Box mx={12} my={8}>
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <DailyInsight name={authTokens.firstName} numCheckedIn={summary.numCheckedIn} total={summary.total} />
+          <DailyInsight name={authTokens.firstName} numCheckedIn={summary.numCheckedIn} total={summary.total} dateString={dateString} />
         </Grid>
         <Grid item xs={12}>
-          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} departmentName={department.departmentName} tableData={tableData} />
+          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} departmentName={department.departmentName} tableData={tableData} />
         </Grid>
       </Grid>
     </Box>

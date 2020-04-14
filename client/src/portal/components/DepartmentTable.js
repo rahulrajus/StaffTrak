@@ -19,27 +19,9 @@ import Fade from '@material-ui/core/Fade';
 import {
   MuiPickersUtilsProvider, KeyboardDatePicker
 } from '@material-ui/pickers';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
-
-function createData(time, name, exposedInLast24h, symptoms, temperature) {
-  return { time, name, exposedInLast24h, symptoms, temperature };
-}
-
-const rows = [
-  createData('12:00 PM', 'Member A', 'Yes', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('1:00 PM', 'Member B', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('1:00 PM', 'Member C', 'Yes', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('2:00 PM', 'Member D', 'No', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('9:00 AM', 'Member E', 'Yes', ['fever', 'chills'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('6:00 AM', 'Member F', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('5:00 AM', 'Member G', 'Yes', ['cough'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('10:00 PM', 'Member H', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('7:00 PM', 'Member I', 'Yes', ['cough'], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('12:00 AM', 'Member J', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-  createData('12:00 PM', 'Member K', 'No', [], [{ date: '3/13', temp: 95 }, { date: '3/14', temp: 95 }, { date: '3/15', temp: 97 }]),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -127,10 +109,17 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const EnhancedTableToolbar = ({ departmentName, selectedDate, setSelectedDate }) => {
+const EnhancedTableToolbar = ({ departmentName, selectedDate, setSelectedDate, setDateString }) => {
   const classes = useToolbarStyles();
 
   const handleDateChange = (date) => {
+    const str = moment(date).calendar(null, {
+      sameDay: '[today]',
+      lastDay: '[yesterday]',
+      lastWeek: '[last] dddd',
+      sameElse: 'MMMM Do'
+    });
+    setDateString(str);
     setSelectedDate(date);
   };
 
@@ -148,6 +137,7 @@ const EnhancedTableToolbar = ({ departmentName, selectedDate, setSelectedDate })
           id="date-picker"
           label="Change date"
           value={selectedDate}
+          maxDate={moment()}
           onChange={handleDateChange}
           KeyboardButtonProps={{
             'aria-label': 'change date',
@@ -226,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function DepartmentTable({ selectedDate, setSelectedDate, departmentName, tableData }) {
+export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, departmentName, tableData }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
@@ -254,7 +244,7 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, departm
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar departmentName={departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+        <EnhancedTableToolbar departmentName={departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} />
         <TableContainer>
           <Table
             className={classes.table}
