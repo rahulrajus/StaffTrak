@@ -1,14 +1,25 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import { useAuth } from '../context/auth';
 import './css/Portal.css';
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
+
 function Portal(props) {
+  const classes = useStyles();
   //get request made here to the database
   const [selectedDate, setSelectedDate] = useState(moment());
   const [dateString, setDateString] = useState('today');
@@ -47,6 +58,14 @@ function Portal(props) {
     const url = `/members?administrator_id=${adminId}&date=${selectedDate}`;
     const response = await axios.get(url);
     return response;
+  }
+
+  if (loading) {
+    return (
+      <Backdrop className={classes.backdrop} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
   }
 
   return (
