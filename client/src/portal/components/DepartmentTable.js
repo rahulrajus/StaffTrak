@@ -33,25 +33,25 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-function descendingTimeComparator(a, b, orderBy){
+function descendingTimeComparator(a, b, orderBy) {
   const timeA = moment(a.timeOfLastCheckIn)
   const timeB = moment(b.timeOfLastCheckIn)
-  if (timeB.isBefore(timeA)){
+  if (timeB.isBefore(timeA)) {
     return -1;
   }
-  if(timeB.isAfter(timeA)){
+  if (timeB.isAfter(timeA)) {
     return 1;
   }
   return 0;
 }
 
 function getComparator(order, orderBy) {
-  if(orderBy == 'time'){
-    return order === 'desc' 
-    ? (a, b) => descendingTimeComparator(a, b, orderBy)
-    : (a, b) => -descendingTimeComparator(a, b, orderBy);
+  if (orderBy == 'time') {
+    return order === 'desc'
+      ? (a, b) => descendingTimeComparator(a, b, orderBy)
+      : (a, b) => -descendingTimeComparator(a, b, orderBy);
   }
-  return order === 'desc' 
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -256,14 +256,9 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && (order === 'asc');
-
-   
     setOrder(isAsc ? 'desc' : 'asc');
-  
-    
     setOrderBy(property);
   };
-
 
   return (
     <div className={classes.root}>
