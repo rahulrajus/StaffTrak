@@ -33,8 +33,25 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
+function descendingTimeComparator(a, b, orderBy){
+  const timeA = moment(a.timeOfLastCheckIn)
+  const timeB = moment(b.timeOfLastCheckIn)
+  if (timeB.isBefore(timeA)){
+    return -1;
+  }
+  if(timeB.isAfter(timeA)){
+    return 1;
+  }
+  return 0;
+}
+
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  if(orderBy == 'time'){
+    return order === 'desc' 
+    ? (a, b) => descendingTimeComparator(a, b, orderBy)
+    : (a, b) => -descendingTimeComparator(a, b, orderBy);
+  }
+  return order === 'desc' 
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -223,6 +240,8 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
   const [open, setOpen] = useState(false);
   const [graphData, setGraphData] = useState([]);
 
+
+
   const handleOpen = (id) => {
     const member = tableData.find(row => row.member_id === id);
     const data = member.temperatures.map(temp => { return { 'date': moment(temp.date).format("M/D h:mma"), 'temp': temp.temp } });
@@ -236,10 +255,15 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
+    const isAsc = orderBy === property && (order === 'asc');
+
+   
     setOrder(isAsc ? 'desc' : 'asc');
+  
+    
     setOrderBy(property);
   };
+
 
   return (
     <div className={classes.root}>
