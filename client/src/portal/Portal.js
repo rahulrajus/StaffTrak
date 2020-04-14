@@ -45,7 +45,7 @@ function Portal(props) {
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [selectedDate]);
 
   const getDepartment = async () => {
     const url = `/department?id=${authTokens.departmentId}`;
