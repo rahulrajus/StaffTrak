@@ -15,7 +15,10 @@ const multipart = multer();
 
 /* Endpoint for populating the members table */
 app.get('/members', async function (req, res) {
-
+  console.log(req.isAuthenticated());
+  if(!req.isAuthenticated()) {
+      res.status(400).json({ error: "Authentication failed."})
+  }
   memberResponse = { members: [] }
 
   administrator_id = req.query.administrator_id
@@ -27,7 +30,6 @@ app.get('/members', async function (req, res) {
   department_id = admin.departmentId;
   department = await Department.findById(department_id).populate('members')
   institution = await Institution.findById(department.institution)
-  console.log(department)
   timeZone = institution.timeZone
   members = department.members
   // for each member:

@@ -9,7 +9,6 @@ passport.use(
   new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
-    session: false,
   },
     (username, password, done) => {
       try {

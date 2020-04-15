@@ -16,6 +16,9 @@ const multipart = multer();
 
 /* Register a new user */
 app.get('/send_notification', async function (req, res) {
+    if(!req.isAuthenticated()) {
+        res.status(400).json({ error: "Authentication failed."})
+    }
     member_id = req.query.member_id
     console.log(member_id)
     user = await User.findById(member_id)
