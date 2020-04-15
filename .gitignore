@@ -1,4 +1,4 @@
 node_modules/*
 client/node_modules/*
-server/scripts/initialization/adminInfo
+server/scripts/initialization/adminInfo.js
 .env
