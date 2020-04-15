@@ -4,7 +4,7 @@ require('dotenv').config();
 
 // connect to database
 const mongoURL = process.env.MONGO_SRV;
-const options = { useNewUrlParser: true, useUnifiedTopology: true };
+const options = { dbName: process.env.DATABASE_NAME, useNewUrlParser: true, useUnifiedTopology: true };
 mongoose.connect(mongoURL, options);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);

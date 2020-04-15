@@ -1,20 +1,21 @@
 const path = require('path');
 require('dotenv').config();
 const db = require('../../db');
+const admin = require('./adminInfo');
 
 const Administrator = require('../../models/Administrator');
 
-var admin = {
-  firstName: "Shannen",
-  lastName: "Wu",
-  phone: 6263254856,
-  email: "shannenwu99@gmail.com",
-  password: "d3fault",
-  departmentId: '5e8d47444d8227419d3ddd45',
+var adminDoc = {
+  firstName: admin.firstName,
+  lastName: admin.lastName,
+  phone: admin.phone,
+  email: admin.email,
+  password: process.env.DEFAULT_PASSWORD,
+  departmentId: admin.departmentId,
   usingDefaultPassword: true,
 };
 
-Administrator.create(admin, (err, doc) => {
+Administrator.create(adminDoc, (err, doc) => {
   if (err) {
     console.log(err)
     return handleError(err);
