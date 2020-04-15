@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "heroku-prebuild": "cd client && npm run build",
     "start": "node server/server.js"
   },
   "requires": true,
