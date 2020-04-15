@@ -25,7 +25,8 @@ app.get('/members', async function (req, res) {
   // get array of members based on administrator_id
   admin = await Administrator.findById(administrator_id);
   department_id = admin.departmentId;
-  department = await Department.findById(department_id).populate('members')
+  department = await Department.findById(department_id).populate('members institution')
+  timeZone = department.institution.timeZone
   members = department.members
   // for each member:
   // console.log(members)
@@ -52,8 +53,8 @@ app.get('/members', async function (req, res) {
       .then((sortedResponses) => {
         lastResponse = null
         tempResponses = sortedResponses.filter(response => {
-            responseTime = moment(response.createdAt)
-            queryTime = moment(query_date)
+            responseTime = moment(response.createdAt).tz(timeZone)
+            queryTime = moment(query_date).tz(timeZone)
             return responseTime.get('date') <= queryTime.get('date') &&
                    responseTime.get('month') <= queryTime.get('month') &&
                    responseTime.get('year') <= queryTime.get('year');
@@ -67,8 +68,8 @@ app.get('/members', async function (req, res) {
           }
         })
         sortedResponses = tempResponses.filter(response => {
-          responseTime = moment(response.createdAt)
-          queryTime = moment(query_date)
+          responseTime = moment(response.createdAt).tz(timeZone)
+          queryTime = moment(query_date).tz(timeZone)
           return responseTime.get('date') == queryTime.get('date') &&
                  responseTime.get('month') == queryTime.get('month') &&
                  responseTime.get('year') == queryTime.get('year');
