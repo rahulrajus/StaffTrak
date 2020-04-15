@@ -23,7 +23,20 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 
+function descendingNameComparator(a, b, orderBy) {
+  if (b[orderBy].last < a[orderBy].last) {
+    return -1;
+  }
+  if (b[orderBy].last > a[orderBy].last) {
+    return 1;
+  }
+  return 0;
+}
+
+
 function descendingComparator(a, b, orderBy) {
+  console.log(a);
+  console.log(orderBy);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -49,6 +62,10 @@ function getComparator(order, orderBy) {
   if (orderBy === 'time') {
     return order === 'desc'
       ? (a, b) => descendingTimeComparator(a, b, orderBy)
+      : (a, b) => -descendingTimeComparator(a, b, orderBy);
+  } else if (orderBy === 'name') {
+    return order === 'desc'
+      ? (a, b) => descendingNameComparator(a, b, orderBy)
       : (a, b) => -descendingTimeComparator(a, b, orderBy);
   }
   return order === 'desc'
