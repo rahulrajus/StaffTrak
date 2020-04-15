@@ -19,6 +19,7 @@ app.use('/', routes);
 notifications.scheduleNotifications();
 
 app.get('/*', function (req, res) {
+    console.log("server serving")
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 

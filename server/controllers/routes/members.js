@@ -51,18 +51,32 @@ app.get('/members', async function (req, res) {
       .sort({ "createdAt": -1 })
       .then((sortedResponses) => {
         lastResponse = null
-        sortedResponses = sortedResponses.filter(response => {
-          return moment(response.createdAt).diff(moment(query_date)) < 0
+        tempResponses = sortedResponses.filter(response => {
+            responseTime = moment(response.createdAt)
+            queryTime = moment(query_date)
+            return responseTime.get('date') <= queryTime.get('date') &&
+                   responseTime.get('month') <= queryTime.get('month') &&
+                   responseTime.get('year') <= queryTime.get('year');
+            // return responseTime.diff(queryTime) <= 0
+
+        })
+        thisMember.temperatures = tempResponses.map((val, index, array) => {
+          return {
+            "date": array[array.length - 1 - index].createdAt,
+            "temp": array[array.length - 1 - index].temperature
+          }
+        })
+        sortedResponses = tempResponses.filter(response => {
+          responseTime = moment(response.createdAt)
+          queryTime = moment(query_date)
+          return responseTime.get('date') == queryTime.get('date') &&
+                 responseTime.get('month') == queryTime.get('month') &&
+                 responseTime.get('year') == queryTime.get('year');
         });
         if(sortedResponses.length == 0) {
             return null;
         }
-        thisMember.temperatures = sortedResponses.map(response => {
-          return {
-            "date": response.createdAt,
-            "temp": response.temperature
-          }
-        })
+
         lastResponse = sortedResponses[0]
         thisMember.timeOfLastCheckIn = lastResponse.createdAt
         thisMember.exposedInLast24h = lastResponse.exposedInLast24h
