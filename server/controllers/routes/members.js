@@ -30,8 +30,7 @@ app.get('/members', async function (req, res) {
   // for each member:
   // console.log(members)
   memberResponse.members = await Promise.all(members.map(member => {
-
-    thisMember = {
+    var thisMember = {
       member_id: null,
       name: null,
       temperatures: [],
@@ -53,11 +52,14 @@ app.get('/members', async function (req, res) {
       .then((sortedResponses) => {
         lastResponse = null
         sortedResponses = sortedResponses.filter(response => {
-          return moment(response.updatedAt).diff(moment(query_date)) < 0
-        })
+          return moment(response.createdAt).diff(moment(query_date)) < 0
+        });
+        if(sortedResponses.length == 0) {
+            return null;
+        }
         thisMember.temperatures = sortedResponses.map(response => {
           return {
-            "date": response.updatedAt,
+            "date": response.createdAt,
             "temp": response.temperature
           }
         })
@@ -68,9 +70,11 @@ app.get('/members', async function (req, res) {
         thisMember.checkedInToday = true
         return thisMember
       })
+
     return updatedMem;
-  }));
-  res.send(memberResponse)
+    }));
+  filteredMembers = memberResponse.members.filter(item => item != null)
+  res.send({members: filteredMembers})
 
 });
 
