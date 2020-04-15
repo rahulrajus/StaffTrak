@@ -1,6 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -27,7 +28,8 @@ function Portal(props) {
   const [department, setDepartment] = useState({});
   const [summary, setSummary] = useState({});
   const [loading, setLoading] = useState(false);
-  const { authTokens } = useAuth();
+  const [authError, setAuthError] = useState(false);
+  const { authTokens, setAuthTokens } = useAuth();
 
   useEffect(() => {
     document.title = 'StaffTrak';
@@ -35,30 +37,49 @@ function Portal(props) {
       setLoading(true);
       const [departmentResponse, tableDataResponse] = await Promise.all([getDepartment(), getTableData()]);
 
-      // daily insight
-      const numCheckedIn = tableDataResponse.data.members.length;
-      const total = departmentResponse.data.members.length;
+      if (departmentResponse === 'AUTH ERROR' || tableDataResponse === 'AUTH ERROR') {
+        setAuthError(true);
+      } else {
+        // daily insight
+        const numCheckedIn = tableDataResponse.data.members.length;
+        const total = departmentResponse.data.members.length;
 
-      setDepartment(departmentResponse.data);
-      setTableData(tableDataResponse.data.members);
-      setSummary({ numCheckedIn, total });
+        setDepartment(departmentResponse.data);
+        setTableData(tableDataResponse.data.members);
+        setSummary({ numCheckedIn, total });
+      }
       setLoading(false);
     }
     fetchData();
   }, [selectedDate]);
 
   const getDepartment = async () => {
-    const url = `/department?id=${authTokens.departmentId}`;
-    const response = await axios.get(url);
-    return response;
+    try {
+      const url = `/department?id=${authTokens.departmentId}`;
+      const response = await axios.get(url);
+      return response;
+    } catch (err) {
+      return 'AUTH ERROR';
+    }
   }
 
   const getTableData = async () => {
-    const adminId = authTokens._id;
-    const dateString = selectedDate.toISOString();
-    const url = `/members?administrator_id=${adminId}&date=${dateString}`;
-    const response = await axios.get(url);
-    return response;
+    try {
+      const adminId = authTokens._id;
+      const dateString = selectedDate.toISOString();
+      const url = `/members?administrator_id=${adminId}&date=${dateString}`;
+      const response = await axios.get(url);
+      return response;
+    } catch (err) {
+      return 'AUTH ERROR';
+    }
+  }
+
+  if (authError) {
+    setAuthTokens();
+    return (
+      <Redirect to='/' />
+    )
   }
 
   if (loading) {
