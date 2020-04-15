@@ -25,8 +25,10 @@ app.get('/members', async function (req, res) {
   // get array of members based on administrator_id
   admin = await Administrator.findById(administrator_id);
   department_id = admin.departmentId;
-  department = await Department.findById(department_id).populate('members institution')
-  timeZone = department.institution.timeZone
+  department = await Department.findById(department_id).populate('members')
+  institution = await Institution.findById(department.institution)
+  console.log(department)
+  timeZone = institution.timeZone
   members = department.members
   // for each member:
   // console.log(members)
@@ -55,6 +57,7 @@ app.get('/members', async function (req, res) {
         tempResponses = sortedResponses.filter(response => {
             responseTime = moment(response.createdAt).tz(timeZone)
             queryTime = moment(query_date).tz(timeZone)
+
             return responseTime.get('date') <= queryTime.get('date') &&
                    responseTime.get('month') <= queryTime.get('month') &&
                    responseTime.get('year') <= queryTime.get('year');
