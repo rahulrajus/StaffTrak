@@ -4,12 +4,13 @@ const Department = require('../../models/Department');
 const app = express.Router();
 
 app.get('/department', async function (req, res) {
-    if(!req.isAuthenticated()) {
-        res.status(400).json({ error: "Authentication failed."})
-    }
-  const id = req.query.id;
-  department = await Department.findById(id);
-  res.send(department);
+  if (!req.isAuthenticated()) {
+    res.status(400).json({ error: "Authentication failed." })
+  } else {
+    const id = req.query.id;
+    department = await Department.findById(id);
+    res.send(department);
+  }
 });
 
 module.exports = app;

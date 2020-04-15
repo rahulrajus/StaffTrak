@@ -16,8 +16,9 @@ const multipart = multer();
 /* Endpoint for populating the members table */
 app.get('/members', async function (req, res) {
   console.log(req.isAuthenticated());
-  if(!req.isAuthenticated()) {
-      res.status(400).json({ error: "Authentication failed."})
+  if (!req.isAuthenticated()) {
+    res.status(400).json({ error: "Authentication failed." })
+    return;
   }
   memberResponse = { members: [] }
 
@@ -57,13 +58,13 @@ app.get('/members', async function (req, res) {
       .then((sortedResponses) => {
         lastResponse = null
         tempResponses = sortedResponses.filter(response => {
-            responseTime = moment(response.createdAt).tz(timeZone)
-            queryTime = moment(query_date).tz(timeZone)
+          responseTime = moment(response.createdAt).tz(timeZone)
+          queryTime = moment(query_date).tz(timeZone)
 
-            return responseTime.get('date') <= queryTime.get('date') &&
-                   responseTime.get('month') <= queryTime.get('month') &&
-                   responseTime.get('year') <= queryTime.get('year');
-            // return responseTime.diff(queryTime) <= 0
+          return responseTime.get('date') <= queryTime.get('date') &&
+            responseTime.get('month') <= queryTime.get('month') &&
+            responseTime.get('year') <= queryTime.get('year');
+          // return responseTime.diff(queryTime) <= 0
 
         })
         thisMember.temperatures = tempResponses.map((val, index, array) => {
@@ -76,11 +77,11 @@ app.get('/members', async function (req, res) {
           responseTime = moment(response.createdAt).tz(timeZone)
           queryTime = moment(query_date).tz(timeZone)
           return responseTime.get('date') == queryTime.get('date') &&
-                 responseTime.get('month') == queryTime.get('month') &&
-                 responseTime.get('year') == queryTime.get('year');
+            responseTime.get('month') == queryTime.get('month') &&
+            responseTime.get('year') == queryTime.get('year');
         });
-        if(sortedResponses.length == 0) {
-            return null;
+        if (sortedResponses.length == 0) {
+          return null;
         }
 
         lastResponse = sortedResponses[0]
@@ -92,9 +93,9 @@ app.get('/members', async function (req, res) {
       })
 
     return updatedMem;
-    }));
+  }));
   filteredMembers = memberResponse.members.filter(item => item != null)
-  res.send({members: filteredMembers})
+  res.send({ members: filteredMembers })
 
 });
 
