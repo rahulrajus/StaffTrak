@@ -12,6 +12,10 @@ var generateLink = (url, phoneNumber, name, department) => {
     return `${url}?name%5Bfirst%5D=${name.first}&name%5Blast%5D=${name.last}&phoneNumber=${phoneNumber}&department=${departmentFormatted}`
 }
 
+var remindMessage = (url, phoneNumber, name, department) => {
+    var msg =  `Please fill out the form to check-in!`
+}
+
 function sendDepartmentNotification(department) {
 
     notifTimes = department.notifTimes
@@ -50,12 +54,6 @@ function sendDepartmentNotification(department) {
                     timeOfLastNotif: scheduledFormatted
                 }
             })
-            // console.log('yoo we updated lastNotif yuh')
-
-
-            //check if notification has already been sent
-            //mark notification as sent
-            //sends notification
             url = institution.responseForm.url;
             departmentName = department.departmentName;
 
@@ -64,9 +62,6 @@ function sendDepartmentNotification(department) {
                 user = await User.findById(user_id);
                 name = { first: user.firstName, last: user.lastName };
                 phoneNumber = user.phoneNumber;
-                //   console.log(phoneNumber);
-                //   console.log("sending")
-
                 formLink = generateLink(url, phoneNumber, name, departmentName);
                 sendSMS(formLink, phoneNumber);
             })
