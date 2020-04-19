@@ -23,6 +23,7 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 
+
 function descendingNameComparator(a, b, orderBy) {
   if (b[orderBy].last < a[orderBy].last) {
     return -1;
@@ -250,12 +251,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, departmentName, tableData }) {
+export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, departmentName, tableData, isResponses}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
   const [open, setOpen] = useState(false);
   const [graphData, setGraphData] = useState([]);
+  const [notRespondedTable, setNotRespondedTable] = useState([]);
+
+
+
 
 
 
@@ -281,7 +286,7 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar departmentName={departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} />
-        <TableContainer>
+        {isResponses ? <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -330,7 +335,71 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
                 })}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> :
+
+<TableContainer>
+<Table
+  className={classes.table}
+  aria-labelledby="tableTitle"
+  size={'medium'}
+  aria-label="enhanced table"
+>
+  <colgroup>
+    <col style={{ width: '15%' }} />
+    <col style={{ width: '25%' }} />
+    <col style={{ width: '20%' }} />
+    <col style={{ width: '40%' }} />
+  </colgroup>
+  <EnhancedTableHead
+    classes={classes}
+    order={order}
+    orderBy={orderBy}
+    onRequestSort={handleRequestSort}
+    rowCount={tableData.length}
+  />
+  <TableBody>
+    <TableRow>
+      <TableCell>
+        TEST
+      </TableCell>
+    </TableRow>
+    {/* {stableSort(tableData, getComparator(order, orderBy))
+      .map((row, index) => {
+        const labelId = `enhanced-table-${index}`;
+        const noSymptoms = row.symptoms.includes("I have no symptoms today") ? true : false;
+        const rowColor = noSymptoms && row.exposedInLast24h === "No" ? classes.rowNormal : classes.rowSymptoms;
+        const time = moment(row.timeOfLastCheckIn).format('LT');
+
+        return (
+          <TableRow
+            hover
+            tabIndex={-1}
+            key={row.member_id}
+            onClick={() => handleOpen(row.member_id)}
+            className={rowColor}
+          >
+            <TableCell component="th" id={labelId}>
+              {time}
+            </TableCell>
+            <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
+            <TableCell align="left">{row.exposedInLast24h}</TableCell>
+            <TableCell align="left">
+              <SymptomChips symptomsList={row.symptoms} />
+            </TableCell>
+          </TableRow>
+        );
+      })} */}
+  </TableBody>
+</Table>
+</TableContainer>
+        
+        
+        
+        
+        
+        
+        
+        }
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

@@ -11,6 +11,10 @@ import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import { useAuth } from '../context/auth';
 import './css/Portal.css';
+import Chip from '@material-ui/core/Chip';
+
+
+
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -30,12 +34,16 @@ function Portal(props) {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
   const { authTokens, setAuthTokens } = useAuth();
+  const [isResponses, setIsResponses] = useState(true)
+
+ 
 
   useEffect(() => {
     document.title = 'StaffTrak';
     async function fetchData() {
       setLoading(true);
       const [departmentResponse, tableDataResponse] = await Promise.all([getDepartment(), getTableData()]);
+
 
       if (departmentResponse === 'AUTH ERROR' || tableDataResponse === 'AUTH ERROR') {
         setAuthError(true);
@@ -60,8 +68,13 @@ function Portal(props) {
       return response;
     } catch (err) {
       return 'AUTH ERROR';
-    }
+    } 
   }
+
+  const handleSwitch = () =>{
+    setIsResponses(!isResponses)
+  }
+
 
   const getTableData = async () => {
     try {
@@ -96,8 +109,20 @@ function Portal(props) {
         <Grid item xs={12}>
           <DailyInsight name={authTokens.firstName} numCheckedIn={summary.numCheckedIn} total={summary.total} dateString={dateString} />
         </Grid>
+        <Grid item xs={3}>
+          <Chip onClick={handleSwitch}>
+            Responses
+          </Chip>
+
+        </Grid>
+        <Grid item xs={3}>
+          <Chip onClick={handleSwitch}>
+            No Responses
+          </Chip>
+        </Grid>
         <Grid item xs={12}>
-          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} departmentName={department.departmentName} tableData={tableData} />
+          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} departmentName={department.departmentName} tableData={tableData} isResponses={isResponses} />
+
         </Grid>
       </Grid>
     </Box>
