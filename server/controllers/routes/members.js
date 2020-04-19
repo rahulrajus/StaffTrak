@@ -95,7 +95,7 @@ app.get('/members', async function (req, res) {
     return updatedMem;
   }));
   filteredMembers = memberResponse.members.filter(item => item != null)
-  res.send({ members: filteredMembers })
+  res.send({ members: filteredMembers})
 
 });
 

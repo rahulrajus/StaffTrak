@@ -20,18 +20,18 @@ var userSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId, ref: 'Department',
     required: true
   },
+  age: {
+    type: Number
+  },
   sex: {
     type: String,
-    trim: true,
-    required: true,
+    trim: true
   },
   homeZipCode: {
-    type: Number,
-    required: true
+    type: Number
   },
   preexistingRiskCondition: {
-    type: Boolean,
-    required: true
+    type: Boolean
   },
   responses: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Response' }],

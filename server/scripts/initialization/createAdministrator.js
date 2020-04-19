@@ -10,7 +10,7 @@ var adminDoc = {
   lastName: admin.lastName,
   phone: admin.phone,
   email: admin.email,
-  password: process.env.DEFAULT_PASSWORD,
+  password: "abc123",
   departmentId: admin.departmentId,
   usingDefaultPassword: true,
 };
@@ -23,4 +23,3 @@ Administrator.create(adminDoc, (err, doc) => {
   console.log(doc);
   console.log("saved!")
 })
-

@@ -41,6 +41,9 @@ var administratorSchema = new mongoose.Schema({
   usingDefaultPassword: {
     type: Boolean,
     required: true
+  },
+  supervisor: {
+    type: Boolean
   }
 });
 
