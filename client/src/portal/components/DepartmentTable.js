@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,6 +17,8 @@ import Paper from '@material-ui/core/Paper';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
   MuiPickersUtilsProvider, KeyboardDatePicker
 } from '@material-ui/pickers';
@@ -36,8 +39,6 @@ function descendingNameComparator(a, b, orderBy) {
 
 
 function descendingComparator(a, b, orderBy) {
-  console.log(a);
-  console.log(orderBy);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -84,6 +85,11 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+const noResponseHeadCells = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'sendNotif', numeric: false, disablePadding: false, label: 'Send Notification' },
+];
+
 const headCells = [
   { id: 'time', numeric: false, disablePadding: false, label: 'Last Check-in (Local Time)' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
@@ -92,15 +98,17 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, order, orderBy, onRequestSort } = props;
+  const { isResponses, classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
+  const cells = isResponses ? headCells : noResponseHeadCells;
+
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
+        {cells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -251,18 +259,37 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, departmentName, tableData, isResponses}) {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, department, tableData, isResponses }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
   const [open, setOpen] = useState(false);
   const [graphData, setGraphData] = useState([]);
-  const [notRespondedTable, setNotRespondedTable] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [errorSMS, setErrorSMS] = useState(false);
 
+  const handleSendSMS = async (id) => {
+    try {
+      const url = `/send_notification?member_id=${id}`;
+      const response = await axios.get(url);
+      setShowSnackbar(true);
+      setErrorSMS(!response.data.success);
+    } catch (err) {
+      setShowSnackbar(true);
+      setErrorSMS(true);
+    }
+  };
 
-
-
-
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSnackbar(false);
+  };
 
   const handleOpen = (id) => {
     const member = tableData.find(row => row.member_id === id);
@@ -276,17 +303,19 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
     setOpen(false);
   };
 
-  const handleRequestSort = (event, property) => {
+  const handleRequestSort = (_event, property) => {
     const isAsc = orderBy === property && (order === 'asc');
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
+  const data = isResponses ? tableData : department.members;
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar departmentName={departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} />
-        {isResponses ? <TableContainer>
+        <EnhancedTableToolbar departmentName={department.departmentName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} />
+        <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -300,133 +329,88 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
               <col style={{ width: '40%' }} />
             </colgroup>
             <EnhancedTableHead
+              isResponses={isResponses}
               classes={classes}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={tableData.length}
+              rowCount={data.length}
             />
             <TableBody>
-              {stableSort(tableData, getComparator(order, orderBy))
+              {stableSort(data, getComparator(order, orderBy))
                 .map((row, index) => {
-                  const labelId = `enhanced-table-${index}`;
-                  const noSymptoms = row.symptoms.includes("I have no symptoms today") ? true : false;
-                  const rowColor = noSymptoms && row.exposedInLast24h === "No" ? classes.rowNormal : classes.rowSymptoms;
-                  const time = moment(row.timeOfLastCheckIn).format('LT');
+                  if (isResponses) {
+                    const labelId = `enhanced-table-${index}`;
+                    const noSymptoms = row.symptoms.includes("I have no symptoms today") ? true : false;
+                    const rowColor = noSymptoms && row.exposedInLast24h === "No" ? classes.rowNormal : classes.rowSymptoms;
+                    const time = moment(row.timeOfLastCheckIn).format('LT');
+                    return (
+                      <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={row.member_id}
+                        onClick={() => handleOpen(row.member_id)}
+                        className={rowColor}
+                      >
+                        <TableCell component="th" id={labelId}>
+                          {time}
+                        </TableCell>
+                        <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
+                        <TableCell align="left">{row.exposedInLast24h}</TableCell>
+                        <TableCell align="left">
+                          <SymptomChips symptomsList={row.symptoms} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
 
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
-                      key={row.member_id}
-                      onClick={() => handleOpen(row.member_id)}
-                      className={rowColor}
+                      key={row._id}
                     >
-                      <TableCell component="th" id={labelId}>
-                        {time}
-                      </TableCell>
-                      <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
-                      <TableCell align="left">{row.exposedInLast24h}</TableCell>
-                      <TableCell align="left">
-                        <SymptomChips symptomsList={row.symptoms} />
-                      </TableCell>
+                      <TableCell align="left">{row.firstName + ' ' + row.lastName}</TableCell>
+                      <TableCell align="left">{<Chip label="Send SMS" color="secondary" clickable onClick={() => handleSendSMS(row._id)} />}</TableCell>
                     </TableRow>
                   );
                 })}
             </TableBody>
           </Table>
-        </TableContainer> :
-
-<TableContainer>
-<Table
-  className={classes.table}
-  aria-labelledby="tableTitle"
-  size={'medium'}
-  aria-label="enhanced table"
->
-  <colgroup>
-    <col style={{ width: '15%' }} />
-    <col style={{ width: '25%' }} />
-    <col style={{ width: '20%' }} />
-    <col style={{ width: '40%' }} />
-  </colgroup>
-  <EnhancedTableHead
-    classes={classes}
-    order={order}
-    orderBy={orderBy}
-    onRequestSort={handleRequestSort}
-    rowCount={tableData.length}
-  />
-  <TableBody>
-    <TableRow>
-      <TableCell>
-        TEST
-      </TableCell>
-    </TableRow>
-    {/* {stableSort(tableData, getComparator(order, orderBy))
-      .map((row, index) => {
-        const labelId = `enhanced-table-${index}`;
-        const noSymptoms = row.symptoms.includes("I have no symptoms today") ? true : false;
-        const rowColor = noSymptoms && row.exposedInLast24h === "No" ? classes.rowNormal : classes.rowSymptoms;
-        const time = moment(row.timeOfLastCheckIn).format('LT');
-
-        return (
-          <TableRow
-            hover
-            tabIndex={-1}
-            key={row.member_id}
-            onClick={() => handleOpen(row.member_id)}
-            className={rowColor}
+        </TableContainer>
+        <Snackbar open={showSnackbar} autoHideDuration={2000} onClose={handleCloseAlert}>
+          <Alert onClose={handleCloseAlert} severity={errorSMS ? "error" : "success"}>
+            {errorSMS ? "Failed to send SMS." : "SMS sent!"}
+          </Alert>
+        </Snackbar>
+        {isResponses &&
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
           >
-            <TableCell component="th" id={labelId}>
-              {time}
-            </TableCell>
-            <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
-            <TableCell align="left">{row.exposedInLast24h}</TableCell>
-            <TableCell align="left">
-              <SymptomChips symptomsList={row.symptoms} />
-            </TableCell>
-          </TableRow>
-        );
-      })} */}
-  </TableBody>
-</Table>
-</TableContainer>
-        
-        
-        
-        
-        
-        
-        
-        }
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.modal}
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <div className={classes.paper2}>
-              <Box mb={2}>
-                <Typography variant="h6">Temperature over last 2 weeks</Typography>
-              </Box>
-              <LineChart width={600} height={300} data={graphData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <Line type="monotone" dataKey="temp" stroke="#8884d8" strokeWidth={3} />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="date" hide={true} />
-                <YAxis type="number" domain={['dataMin-4', 'dataMax+4']} />
-                <Tooltip />
-              </LineChart>
-            </div>
-          </Fade>
-        </Modal>
+            <Fade in={open}>
+              <div className={classes.paper2}>
+                <Box mb={2}>
+                  <Typography variant="h6">Temperature over last 2 weeks</Typography>
+                </Box>
+                <LineChart width={600} height={300} data={graphData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <Line type="monotone" dataKey="temp" stroke="#8884d8" strokeWidth={3} />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis dataKey="date" hide={true} />
+                  <YAxis type="number" domain={['dataMin-4', 'dataMax+4']} />
+                  <Tooltip />
+                </LineChart>
+              </div>
+            </Fade>
+          </Modal>}
       </Paper>
     </div >
   );

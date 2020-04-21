@@ -15,7 +15,6 @@ const multipart = multer();
 
 /* Endpoint for populating the members table */
 app.get('/members', async function (req, res) {
-  console.log(req.isAuthenticated());
   if (!req.isAuthenticated()) {
     res.status(400).json({ error: "Authentication failed." })
     return;
@@ -24,8 +23,6 @@ app.get('/members', async function (req, res) {
 
   administrator_id = req.query.administrator_id
   query_date = moment(req.query.date)
-  // console.log(administrator_id)
-  // console.log(query_date);
   // get array of members based on administrator_id
   admin = await Administrator.findById(administrator_id);
   department_id = admin.departmentId;
