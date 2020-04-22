@@ -10,7 +10,7 @@ var adminDoc = {
   lastName: admin.lastName,
   phone: admin.phone,
   email: admin.email,
-  password: "abc123",
+  password: "b3atc0r0na",
   departmentId: admin.departmentId,
   usingDefaultPassword: true,
 };

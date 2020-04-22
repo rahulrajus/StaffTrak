@@ -16,7 +16,7 @@ var userSchema = new mongoose.Schema({
     type: Number,
     required: 'phone number is required'
   },
-  departmentId: {
+  department: {
     type: Schema.Types.ObjectId, ref: 'Department',
     required: true
   },

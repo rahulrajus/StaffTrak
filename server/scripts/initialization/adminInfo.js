@@ -1,9 +1,8 @@
 const admin = {
-  firstName: 'David',
-  lastName: 'Luke',
-  phone: 6317470551,
-  email: 'lukedj@sutterhealth.org',
-  departmentId: '5e9b60d71c9d440000373a7e',
+  firstName: 'Kovi',
+  lastName: 'Bessoff',
+  phone: 3038597453,
+  email: 'kbessoff@stanford.edu',
+  departmentId: '5e9ff7b4c6536400007f8606',
 }
-
 module.exports = admin;
