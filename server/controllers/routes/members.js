@@ -15,23 +15,25 @@ const multipart = multer();
 
 /* Endpoint for populating the members table */
 app.get('/members', async function (req, res) {
+
+  // Authentication
   if (!req.isAuthenticated()) {
     res.status(400).json({ error: "Authentication failed." })
     return;
   }
-  memberResponse = { members: [] }
 
+  // Get array of members based on administrator_id
   administrator_id = req.query.administrator_id
   query_date = moment(req.query.date)
-  // get array of members based on administrator_id
   admin = await Administrator.findById(administrator_id);
   department_id = admin.departmentId;
   department = await Department.findById(department_id).populate('members')
   institution = await Institution.findById(department.institution)
   timeZone = institution.timeZone
   members = department.members
-  // for each member:
-  // console.log(members)
+
+  // Populate response json with list of members
+  memberResponse = { members: [] }
   memberResponse.members = await Promise.all(members.map(member => {
     var thisMember = {
       member_id: null,
@@ -61,15 +63,16 @@ app.get('/members', async function (req, res) {
           return responseTime.get('date') <= queryTime.get('date') &&
             responseTime.get('month') <= queryTime.get('month') &&
             responseTime.get('year') <= queryTime.get('year');
-          // return responseTime.diff(queryTime) <= 0
 
-        })
+        }) // gives you all data until the query date
         thisMember.temperatures = tempResponses.map((val, index, array) => {
           return {
             "date": array[array.length - 1 - index].createdAt,
             "temp": array[array.length - 1 - index].temperature
           }
         })
+
+        // Get response from the query date
         sortedResponses = tempResponses.filter(response => {
           responseTime = moment(response.createdAt).tz(timeZone)
           queryTime = moment(query_date).tz(timeZone)
@@ -77,21 +80,30 @@ app.get('/members', async function (req, res) {
             responseTime.get('month') == queryTime.get('month') &&
             responseTime.get('year') == queryTime.get('year');
         });
+
         if (sortedResponses.length == 0) {
-          return null;
+          thisMember.checkedInToday = false;
+          return thisMember;
         }
 
-        lastResponse = sortedResponses[0]
-        thisMember.timeOfLastCheckIn = lastResponse.createdAt
-        thisMember.exposedInLast24h = lastResponse.exposedInLast24h
-        thisMember.symptoms = lastResponse.symptoms
-        thisMember.checkedInToday = true
-        return thisMember
+        lastResponse = sortedResponses[0];
+        thisMember.checkedInToday = true;
+        thisMember.timeOfLastCheckIn = lastResponse.createdAt;
+        thisMember.exposedInLast24h = lastResponse.exposedInLast24h;
+        thisMember.symptoms = lastResponse.symptoms;
+        return thisMember;
+
       })
     return updatedMem;
   }));
-  filteredMembers = memberResponse.members.filter(item => item != null)
-  res.send({ members: filteredMembers})
+
+  checkedInMembers = memberResponse.members.filter(item => item.checkedInToday)
+  notYetResponded = memberResponse.members.filter(item => !item.checkedInToday)
+
+  res.send({members: checkedInMembers, notYetResponded: notYetResponded})
+
+  //filteredMembers = memberResponse.members.filter(item => item != null)
+  //res.send({ members: filteredMembers})
 
 });
 
