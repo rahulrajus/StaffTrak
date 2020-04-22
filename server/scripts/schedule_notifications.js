@@ -8,8 +8,10 @@ const Department = require('../models/Department');
 const User = require('../models/User');
 
 var generateLink = (url, phoneNumber, name, department) => {
+    firstNameFormatted = name.first.split(" ").join("%20");
+    lastNameFormatted = name.last.split(" ").join("%20");
     departmentFormatted = department.split(" ").join("%20");
-    return `${url}?name%5Bfirst%5D=${name.first}&name%5Blast%5D=${name.last}&phoneNumber=${phoneNumber}&department=${departmentFormatted}`
+    return `${url}?name%5Bfirst%5D=${firstNameFormatted}&name%5Blast%5D=${lastNameFormatted}&phoneNumber=${phoneNumber}&department=${departmentFormatted}`
 }
 
 function sendDepartmentNotification(department) {
