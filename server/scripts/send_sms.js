@@ -7,15 +7,19 @@ const authToken = process.env.AUTH_TOKEN;
 const senderPhoneNum = process.env.PHONE_NUMBER;
 
 const client = require('twilio')(accountSid, authToken);
-function sendSMS(messageBody, recipientPhoneNum) {
+async function sendSMS(messageBody, recipientPhoneNum) {
     client.messages
         .create({
             body: messageBody,
             from: '+1' + senderPhoneNum,
             to: '+1' + recipientPhoneNum
         })
-        .then(message => console.log(message.sid)).catch(err => {
+        .then(message => {
+            console.log(message);
+            return true;
+        }).catch(err => {
             console.log(err);
+            return false;
         });
 
 }

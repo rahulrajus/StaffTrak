@@ -15,6 +15,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import './App.css';
 import logo from './images/stafftrak-horizontal.png';
 
+
 const theme = createMuiTheme({
   palette: {
     teal: "#008995",

@@ -4,7 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DailyInsight from './components/DailyInsight';
@@ -30,6 +33,7 @@ function Portal(props) {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
   const { authTokens, setAuthTokens } = useAuth();
+  const [isResponses, setIsResponses] = useState(true)
 
   useEffect(() => {
     document.title = 'StaffTrak';
@@ -61,6 +65,10 @@ function Portal(props) {
     } catch (err) {
       return 'AUTH ERROR';
     }
+  }
+
+  const handleSwitch = () => {
+    setIsResponses(!isResponses)
   }
 
   const getTableData = async () => {
@@ -96,8 +104,22 @@ function Portal(props) {
         <Grid item xs={12}>
           <DailyInsight name={authTokens.firstName} numCheckedIn={summary.numCheckedIn} total={summary.total} dateString={dateString} />
         </Grid>
+        <Grid item xs={6}>
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!isResponses}
+                  onChange={handleSwitch}
+                  name="responses"
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />}
+              label={isResponses ? "Showing members who have responded" : "Showing members who have NOT responded"}
+            />
+          </FormGroup>
+        </Grid>
         <Grid item xs={12}>
-          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} departmentName={department.departmentName} tableData={tableData} />
+          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} department={department} tableData={tableData} isResponses={isResponses} />
         </Grid>
       </Grid>
     </Box>
