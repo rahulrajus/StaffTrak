@@ -39,7 +39,7 @@ app.post('/register', multipart.array(), async function (req, res) {
       age: data[registrationKeys.age],
       sex: data[registrationKeys.sex],
       homeZipCode: data[registrationKeys.homeZipCode],
-      preexistingRiskCondition: data[registrationKeys.preexistingRiskCondition]
+      preexistingRiskConditions: data[registrationKeys.preexistingRiskConditions]
     }
   }
   user = await User.findOneAndUpdate(query, userUpdate, { upsert: true, "new": true })
