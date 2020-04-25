@@ -14,6 +14,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
 import { useAuth } from '../context/auth';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 import './css/Portal.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +25,11 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   },
 }));
+
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 function Portal(props) {
   const classes = useStyles();
@@ -35,7 +43,15 @@ function Portal(props) {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(false);
   const { authTokens, setAuthTokens } = useAuth();
-  const [isResponses, setIsResponses] = useState(true)
+  const [isResponses, setIsResponses] = useState(true);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSnackbar(false);
+  };
 
   useEffect(() => {
     document.title = 'StaffTrak';
@@ -89,9 +105,10 @@ function Portal(props) {
   const remindAll = async () => {
     try {
       const members = noResponseData.map(member => member.member_id);
-      const url = `/send_all_notification?members=${members}`;
-      const response = await axios.get(url);
+      const url = `/send_all_notification`;
+      const response = await axios.post(url, {data: members});
       // set snackbar response
+      showSnackbar(true)
     } catch (err) {
       console.log(err);
     }
@@ -130,7 +147,7 @@ function Portal(props) {
                 />}
               label={isResponses ? "Showing members who have responded" : "Showing members who have NOT responded"}
             />
-            {!isResponses && <Fab color="secondary" size="medium" aria-label="remind all" variant="extended">
+            {!isResponses && <Fab onClick={remindAll} color="secondary" size="medium" aria-label="remind all" variant="extended">
               Remind All
             </Fab>}
           </FormGroup>
@@ -139,6 +156,11 @@ function Portal(props) {
           <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} department={department} tableData={tableData} noResponseData={noResponseData} isResponses={isResponses} />
         </Grid>
       </Grid>
+      <Snackbar open={showSnackbar} autoHideDuration={2000} onClose={handleCloseAlert}>
+          <Alert onClose={handleCloseAlert} severity="success">
+                Reminded all!
+          </Alert>
+        </Snackbar>
     </Box>
   );
 }
