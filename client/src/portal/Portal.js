@@ -28,6 +28,7 @@ function Portal(props) {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [dateString, setDateString] = useState('today');
   const [tableData, setTableData] = useState([]);
+  const [noResponseData, setNoResponseData] = useState([]);
   const [department, setDepartment] = useState({});
   const [summary, setSummary] = useState({});
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,7 @@ function Portal(props) {
         const total = departmentResponse.data.members.length;
 
         setDepartment(departmentResponse.data);
+        setNoResponseData(tableDataResponse.data.notYetResponded);
         setTableData(tableDataResponse.data.members);
         setSummary({ numCheckedIn, total });
       }
@@ -119,7 +121,7 @@ function Portal(props) {
           </FormGroup>
         </Grid>
         <Grid item xs={12}>
-          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} department={department} tableData={tableData} isResponses={isResponses} />
+          <DepartmentTable selectedDate={selectedDate} setSelectedDate={setSelectedDate} setDateString={setDateString} department={department} tableData={tableData} noResponseData={noResponseData} isResponses={isResponses} />
         </Grid>
       </Grid>
     </Box>

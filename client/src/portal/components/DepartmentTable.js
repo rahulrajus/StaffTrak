@@ -263,7 +263,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, department, tableData, isResponses }) {
+export default function DepartmentTable({ selectedDate, setSelectedDate, setDateString, department, tableData, noResponseData, isResponses }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('symptoms');
@@ -309,7 +309,7 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
     setOrderBy(property);
   };
 
-  const data = isResponses ? tableData : department.members;
+  const data = isResponses ? tableData : noResponseData;
 
   return (
     <div className={classes.root}>
@@ -368,10 +368,10 @@ export default function DepartmentTable({ selectedDate, setSelectedDate, setDate
                     <TableRow
                       hover
                       tabIndex={-1}
-                      key={row._id}
+                      key={row.member_id}
                     >
-                      <TableCell align="left">{row.firstName + ' ' + row.lastName}</TableCell>
-                      <TableCell align="left">{<Chip label="Send SMS" color="secondary" clickable onClick={() => handleSendSMS(row._id)} />}</TableCell>
+                      <TableCell align="left">{row.name.first + ' ' + row.name.last}</TableCell>
+                      <TableCell align="left">{<Chip label="Send SMS" color="secondary" clickable onClick={() => handleSendSMS(row.member_id)} />}</TableCell>
                     </TableRow>
                   );
                 })}

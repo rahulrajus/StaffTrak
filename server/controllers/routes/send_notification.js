@@ -17,7 +17,7 @@ app.get('/send_notification', async function (req, res) {
     const member_id = req.query.member_id;
     user = User.
         findById(member_id).
-        populate('department').
+        populate('department', 'departmentName institution').
         exec(async (err, usr) => {
             if (err) {
                 console.log(error);
@@ -31,8 +31,7 @@ app.get('/send_notification', async function (req, res) {
                 Institution.findById(usr.department.institution)
             url = institution.responseForm.url
             formLink = notifications.generateLink(url, phoneNumber, name, departmentName);
-            const sent = await sendSMS(formLink, phoneNumber);
-            console.log(sent);
+            await sendSMS(formLink, phoneNumber);
             res.send({ "success": true });
         });
 });
