@@ -8,7 +8,6 @@ const Institution = require('../../models/Institution');
 
 const app = express.Router();
 
-/* Register a new user */
 app.get('/send_notification', async function (req, res) {
     if (!req.isAuthenticated()) {
         res.status(400).json({ error: "Authentication failed." });
@@ -29,11 +28,31 @@ app.get('/send_notification', async function (req, res) {
             name = { first: usr.firstName, last: usr.lastName }
             institution = await
                 Institution.findById(usr.department.institution)
-            url = institution.responseForm.url
+            url = institution.responseForm.url;
             formLink = notifications.generateLink(url, phoneNumber, name, departmentName);
             await sendSMS(formLink, phoneNumber);
             res.send({ "success": true });
         });
+});
+
+app.get('/send_all_notification', async function (req, res) {
+    if (!req.isAuthenticated()) {
+        res.status(400).json({ error: "Authentication failed." });
+        return;
+    }
+    const members = req.query.members;
+    members.forEach(async user_id => {
+        user = await User.findById(user_id).populate('department', 'departmentName institution');
+        name = { first: user.firstName, last: user.lastName };
+        phoneNumber = user.phoneNumber;
+        departmentName = user.department.departmentName
+        institution = await
+            Institution.findById(user.department.institution)
+        url = institution.responseForm.url
+        formLink = generateLink(url, phoneNumber, name, departmentName);
+        sendSMS(formLink, phoneNumber);
+    })
+    res.send({ "success": true });
 });
 
 module.exports = app;

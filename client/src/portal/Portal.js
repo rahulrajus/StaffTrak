@@ -9,6 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
 import Backdrop from '@material-ui/core/Backdrop';
+import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DailyInsight from './components/DailyInsight';
 import DepartmentTable from './components/DepartmentTable';
@@ -85,6 +86,17 @@ function Portal(props) {
     }
   }
 
+  const remindAll = async () => {
+    try {
+      const members = noResponseData.map(member => member.member_id);
+      const url = `/send_all_notification?members=${members}`;
+      const response = await axios.get(url);
+      // set snackbar response
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   if (authError) {
     setAuthTokens();
     return (
@@ -118,6 +130,9 @@ function Portal(props) {
                 />}
               label={isResponses ? "Showing members who have responded" : "Showing members who have NOT responded"}
             />
+            {!isResponses && <Fab color="secondary" size="medium" aria-label="remind all" variant="extended">
+              Remind All
+            </Fab>}
           </FormGroup>
         </Grid>
         <Grid item xs={12}>
